@@ -31,7 +31,7 @@
     </header>
 
     <div id="chat">
-        <div class="msg ai">Interface stabilized. Please paste your key above.</div>
+        <div class="msg ai">Model Path Updated. Please paste your key above to connect.</div>
     </div>
 
     <div class="input-bar">
@@ -69,8 +69,8 @@
             i.value = "";
 
             try {
-                // EXPLICIT ENDPOINT: v1beta + gemini-1.5-flash-latest
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${k}`;
+                // UNIVERSAL PRO PATH - Often fixes the 'Not Found' loop
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${k}`;
                 
                 const response = await fetch(url, {
                     method: "POST",
