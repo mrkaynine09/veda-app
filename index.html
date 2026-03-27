@@ -6,53 +6,47 @@
     <title>Veda App - Live</title>
     <style>
         body {
-            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0; font-family: sans-serif;
             background: radial-gradient(circle at top right, #1e293b, #0f172a);
             color: white; height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
         }
-        header { width: 90%; max-width: 700px; margin-top: 20px; padding: 15px; text-align: center; }
-        .config-area { margin-top: 10px; display: flex; gap: 10px; justify-content: center; }
+        header { width: 90%; max-width: 700px; margin-top: 20px; padding: 20px; text-align: center; }
+        .key-area { margin-top: 15px; }
         input[type="password"] {
-            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
-            color: #4ecca3; padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; width: 200px;
+            background: rgba(0,0,0,0.5); border: 1px solid #4ecca3; color: white;
+            padding: 8px; border-radius: 8px; width: 80%; text-align: center;
         }
         #chat-display {
-            flex: 1; width: 90%; max-width: 700px; margin: 20px 0; padding: 15px;
-            overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+            flex: 1; width: 90%; max-width: 700px; margin: 20px 0; padding: 20px;
+            overflow-y: auto; display: flex; flex-direction: column; gap: 15px;
         }
-        .message { padding: 10px 15px; border-radius: 12px; max-width: 85%; line-height: 1.5; font-size: 0.95rem; }
-        .user-msg { align-self: flex-end; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.3); }
-        .ai-msg { align-self: flex-start; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .input-area { width: 90%; max-width: 700px; margin-bottom: 25px; padding: 12px; display: flex; gap: 8px; }
+        .message { padding: 12px; border-radius: 12px; max-width: 80%; }
+        .user-msg { align-self: flex-end; background: rgba(59, 130, 246, 0.3); }
+        .ai-msg { align-self: flex-start; background: rgba(255, 255, 255, 0.1); }
+        .input-area { width: 90%; max-width: 700px; margin-bottom: 30px; padding: 15px; display: flex; gap: 10px; }
         #userInput { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 1rem; }
-        button { background: #4ecca3; border: none; padding: 8px 18px; border-radius: 10px; color: #0f172a; font-weight: 600; cursor: pointer; }
-        .loading { font-style: italic; opacity: 0.5; font-size: 0.8rem; }
+        button { background: #4ecca3; border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <header class="glass-panel">
-        <h2 style="margin:0">Veda App</h2>
-        <div class="config-area">
-            <input type="password" id="apiKey" placeholder="Paste Gemini API Key Here">
-            <select id="modelSelect" style="background:none; color:white; border:1px solid rgba(255,255,255,0.2); border-radius:5px;">
-                <option value="gemini-1.5-flash">Gemini Flash (Fast)</option>
-                <option value="gemini-1.5-pro">Gemini Pro (Smart)</option>
-            </select>
+        <h1>Veda App</h1>
+        <div class="key-area">
+            <input type="password" id="apiKey" placeholder="Paste NEW Gemini API Key Here">
         </div>
     </header>
 
     <div id="chat-display">
-        <div class="message ai-msg">App is live! Paste your Gemini API key above to start. (Your key is never saved to GitHub).</div>
+        <div class="message ai-msg">1. Delete your old key from AI Studio.<br>2. Create a NEW key.<br>3. Paste it in the box above.<br>4. Start chatting!</div>
     </div>
 
     <div class="input-area glass-panel">
-        <input type="text" id="userInput" placeholder="Ask anything..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <input type="text" id="userInput" placeholder="Ask Veda App..." onkeypress="if(event.key==='Enter') sendMessage()">
         <button onclick="sendMessage()">Send</button>
     </div>
 
@@ -61,40 +55,35 @@
             const input = document.getElementById('userInput');
             const key = document.getElementById('apiKey').value;
             const display = document.getElementById('chat-display');
-            const model = document.getElementById('modelSelect').value;
 
-            if (!input.value.trim()) return;
-            if (!key) { alert("Please paste your API key first!"); return; }
+            if (!input.value.trim() || !key) {
+                alert("Please enter both a message and your API Key!");
+                return;
+            }
 
-            // Show User Message
             const userDiv = document.createElement('div');
             userDiv.className = 'message user-msg';
             userDiv.innerText = input.value;
             display.appendChild(userDiv);
 
-            // Show Loading
             const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'message ai-msg loading';
+            loadingDiv.className = 'message ai-msg';
             loadingDiv.innerText = "Thinking...";
             display.appendChild(loadingDiv);
-            display.scrollTop = display.scrollHeight;
 
-            const userText = input.value;
+            const text = input.value;
             input.value = "";
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: userText }] }] })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
                 });
-
                 const data = await response.json();
-                loadingDiv.classList.remove('loading');
                 loadingDiv.innerText = data.candidates[0].content.parts[0].text;
-            } catch (error) {
-                loadingDiv.innerText = "Error: Check your API key or connection.";
-                console.error(error);
+            } catch (e) {
+                loadingDiv.innerText = "Error! Make sure your API key is correct.";
             }
             display.scrollTop = display.scrollHeight;
         }
