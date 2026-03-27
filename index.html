@@ -3,51 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veda App - Final Fix</title>
+    <title>Veda App - Zen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; font-family: sans-serif; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; height: 100vh; }
-        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; width: 90%; max-width: 600px; margin-top: 20px; text-align: center; }
-        input { width: 85%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #4ecca3; background: #1e293b; color: white; font-size: 1rem; }
-        #chat { flex: 1; width: 90%; max-width: 600px; overflow-y: auto; margin: 20px 0; padding: 10px; display: flex; flex-direction: column; }
-        .msg { padding: 12px; margin: 8px 0; border-radius: 12px; background: rgba(255,255,255,0.1); line-height: 1.5; white-space: pre-wrap; }
-        .user { background: rgba(59, 130, 246, 0.3); align-self: flex-end; }
-        .error { color: #ff6b6b; border: 1px solid #ff6b6b; font-size: 0.8rem; }
-        button { padding: 12px 25px; border-radius: 8px; background: #4ecca3; border: none; font-weight: bold; cursor: pointer; }
+        /* 1. ZEN APPLE AESTHETIC - OFF-WHITE & GREY */
+        :root {
+            --bg-color: #fcfaf6; /* Soft off-white */
+            --text-color: #333333; /* Soft grey text */
+            --accent-color: #a0a0a0; /* Subtle light grey */
+            --input-bg: #ffffff; /* Pure white inputs */
+            --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            margin: 0; padding: 0; font-family: var(--font-stack);
+            background-color: var(--bg-color); color: var(--text-color);
+            display: flex; flex-direction: column; align-items: center;
+            height: 100vh; font-size: 16px;
+        }
+
+        /* 2. HEADER & OM SYMBOL */
+        header {
+            width: 90%; max-width: 700px;
+            margin-top: 40px; text-align: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 20px;
+        }
+
+        .om-symbol {
+            font-size: 2.5rem; color: var(--text-color); margin-bottom: 10px;
+        }
+
+        .veda-title {
+            font-size: 1.1rem; font-weight: 500; margin: 0; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        /* 3. API CONFIG (MINIMAL DROPDOWN) */
+        .config-area {
+            margin-top: 15px; display: flex; gap: 10px; justify-content: center; align-items: center;
+        }
+
+        select, input[type="password"] {
+            border: 1px solid rgba(0,0,0,0.1); border-radius: 8px;
+            background-color: var(--input-bg); color: var(--text-color);
+            padding: 8px; font-family: var(--font-stack); font-size: 0.9rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        /* 4. CHAT DISPLAY (SIMPLE MESSAGES) */
+        #chat-display {
+            flex: 1; width: 90%; max-width: 700px;
+            margin: 20px 0; padding: 10px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+
+        .message {
+            padding: 12px 18px; border-radius: 12px; max-width: 80%;
+            line-height: 1.6; white-space: pre-wrap;
+        }
+
+        .user-msg {
+            align-self: flex-end; background-color: rgba(0,0,0,0.05);
+            border-radius: 12px 12px 2px 12px; /* Subtle Apple-style radius */
+        }
+
+        .ai-msg {
+            align-self: flex-start; background-color: var(--input-bg);
+            border-radius: 2px 12px 12px 12px;
+            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Apple's deep shadow */
+        }
+
+        /* 5. MINIMAL INPUT BAR */
+        .input-area {
+            width: 90%; max-width: 700px; margin-bottom: 40px;
+            padding: 15px; background-color: var(--input-bg);
+            border-radius: 14px; display: flex; gap: 10px; align-items: center;
+            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05); /* Deep soft shadow */
+        }
+
+        #userInput {
+            flex: 1; border: none; font-family: var(--font-stack); font-size: 1rem;
+            color: var(--text-color); background: transparent; outline: none;
+        }
+
+        #userInput::placeholder { color: var(--accent-color); opacity: 0.6; }
+
+        button.send-btn {
+            background-color: var(--text-color); color: var(--bg-color);
+            border: none; padding: 10px 22px; border-radius: 8px;
+            font-weight: 500; font-family: var(--font-stack);
+            cursor: pointer; transition: 0.2s;
+        }
+
+        button.send-btn:hover { background-color: #000000; transform: translateY(-1px); }
+
+        .loading-dots { font-style: italic; opacity: 0.5; color: var(--accent-color); font-size: 0.9rem; }
     </style>
 </head>
 <body>
-    <div class="glass">
-        <h2 style="margin:0 0 10px 0;">Veda App</h2>
-        <input type="password" id="key" placeholder="Paste Gemini API Key">
-        <br>
-        <button onclick="localStorage.clear(); location.reload();" style="background:transparent; color:#ff6b6b; font-size:0.7rem; padding:5px; border:1px solid #ff6b6b;">Clear Saved Key</button>
+
+    <header>
+        <div class="om-symbol">ॐ</div>
+        <h1 class="veda-title">Veda App</h1>
+        <div class="config-area">
+            <select id="modelSelect">
+                <option value="gemini-1.5-flash-latest">Gemini Flash (Fast)</option>
+                <option value="gemini-1.5-pro-latest">Gemini Pro (Smart)</option>
+            </select>
+            <input type="password" id="apiKey" placeholder="Gemini Key" style="width: 150px;">
+        </div>
+    </header>
+
+    <div id="chat-display">
+        <div class="message ai-msg loading-dots">
+            Select a model and paste your key above. Your key is saved locally.
+        </div>
     </div>
 
-    <div id="chat">
-        <div class="msg">Try typing "Hello" once you paste the key.</div>
-    </div>
-
-    <div class="glass" style="margin-bottom: 30px; display: flex; gap: 10px;">
-        <input type="text" id="userInput" placeholder="Ask Veda..." onkeypress="if(event.key==='Enter') send()">
-        <button onclick="send()">Send</button>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Ask anything..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <button class="send-btn" onclick="sendMessage()">Send</button>
     </div>
 
     <script>
-        window.onload = () => { 
-            const saved = localStorage.getItem('v_key');
-            if (saved) document.getElementById('key').value = saved;
+        // THIS CODE HANDLES THE "BRAIN" & KEY SAVE
+        window.onload = function() {
+            const savedKey = localStorage.getItem('v_key');
+            if (savedKey) document.getElementById('apiKey').value = savedKey;
         };
 
-        async function send() {
-            const i = document.getElementById('userInput');
-            const kInput = document.getElementById('key');
-            const k = kInput.value.trim();
-            const c = document.getElementById('chat');
-            if (!i.value || !k) return;
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const keyInput = document.getElementById('apiKey');
+            const display = document.getElementById('chat-display');
+            const model = document.getElementById('modelSelect').value;
 
-            localStorage.setItem('v_key', k);
+            const text = input.value.trim();
+            const key = keyInput.value.trim();
 
-            const userMsg = document.createElement('div');
-            userMsg.className = 'msg user';
-            userMsg.innerText = i.value;
-            c.appendChild
+            if (!text || !key) {
+                if (!key) alert("Please enter your Gemini API Key.");
+                return;
+            }
+
+            // Save key
+            localStorage.setItem('v_key', key);
+
+            // Clear loading msg if it's the first chat
+            if (display.querySelector('.loading-dots')) { display.innerHTML = ''; }
+
+            // Add User Message
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-msg';
+            userDiv.innerText = text;
+            display.appendChild(userDiv);
+
+            // Add Thinking...
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'message ai-msg loading-dots';
+            aiDiv.innerText = "Thinking...";
+            display.appendChild(aiDiv);
+            display.scrollTop = display.scrollHeight;
+
+            input.value = ""; // Clear
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+                
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
+                });
+
+                const data = await res.json();
+                
+                aiDiv.classList.remove('loading-dots');
+                
+                if (data.error) {
+                    aiDiv.innerHTML = `<span style="color:#ff6b6b">Google Error: ${data.error.message}</span>`;
+                } else if (data.candidates) {
+                    aiDiv.innerText = data.candidates[0].content.parts[0].text;
+                } else {
+                    aiDiv.innerText = "Check your key/quota in AI Studio.";
+                }
+            } catch (e) {
+                aiDiv.innerHTML = `<span style="color:#ff6b6b">Network Error. Check your connection.</span>`;
+            }
+            display.scrollTop = display.scrollHeight;
+        }
+    </script>
+</body>
+</html>
