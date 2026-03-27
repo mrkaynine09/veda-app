@@ -1,149 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Veda — Ancient Wisdom</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veda App</title>
+    <style>
+        /* 1. BACKGROUND & LAYOUT */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-<style>
-  :root { --glass: rgba(26, 18, 8, 0.9); --gold: #C9922A; --saffron: #E8720C; --parchment: #F5E6C8; --deep: #0D0A05; }
-  body { background: radial-gradient(circle at top, #1A1208 0%, #0D0A05 100%); background-attachment: fixed; color: var(--parchment); font-family: 'EB Garamond', serif; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
-  header { width: 100%; padding: 25px 0; text-align: center; position: sticky; top: 0; background: rgba(13, 10, 5, 0.85); backdrop-filter: blur(10px); z-index: 100; border-bottom: 1px solid rgba(201, 146, 42, 0.1); }
-  h1 { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 0.4em; margin: 0; font-size: 1.5rem; text-shadow: 0 0 10px rgba(201,146,42,0.3); }
-  
-  #chat-history { width: 100%; max-width: 700px; padding: 20px 20px 180px; display: flex; flex-direction: column; gap: 25px; box-sizing: border-box; }
-  .message.assistant { background: rgba(255, 255, 255, 0.03); border-radius: 16px; padding: 20px; line-height: 1.8; font-size: 1.15rem; border: 1px solid rgba(201, 146, 42, 0.1); animation: fadeIn 0.5s ease forwards; }
-  .message.user { align-self: flex-end; color: var(--gold); font-style: italic; opacity: 0.8; margin-right: 10px; }
+        /* 2. GLASSMORPHISM STYLE */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
 
-  .footer-input-container { position: fixed; bottom: 0; width: 100%; display: flex; flex-direction: column; align-items: center; background: linear-gradient(transparent, var(--deep) 40%); padding-bottom: 30px; z-index: 1000; }
-  .input-wrapper { width: 90%; max-width: 600px; background: var(--glass); border: 1px solid rgba(201, 146, 42, 0.3); border-radius: 20px; display: flex; align-items: center; padding: 5px 15px; backdrop-filter: blur(20px); }
-  select#model-select { background: transparent; color: var(--gold); border: none; font-family: 'Cinzel'; font-size: 0.7rem; outline: none; padding: 10px; cursor: pointer; }
-  input[type="text"] { flex: 1; background: transparent; border: none; color: var(--parchment); padding: 12px; font-size: 1rem; outline: none; }
-  
-  #key-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; z-index: 2000; }
-  .modal-content { background: var(--glass); padding: 30px; border-radius: 24px; border: 1px solid var(--gold); text-align: center; width: 320px; box-shadow: 0 0 50px rgba(0,0,0,1); }
-  .key-input { width: 100%; margin: 10px 0; padding: 12px; border-radius: 10px; border: 1px solid rgba(201,146,42,0.4); background: rgba(0,0,0,0.3); color: white; box-sizing: border-box; }
-  
-  .settings-btn { position: absolute; right: 20px; top: 25px; cursor: pointer; color: var(--gold); font-size: 1.2rem; transition: transform 0.3s; }
-  .settings-btn:hover { transform: rotate(90deg); }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-</style>
+        /* 3. HEADER & SELECTOR */
+        header {
+            width: 90%;
+            max-width: 800px;
+            margin-top: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .model-selector {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* 4. CHAT DISPLAY AREA */
+        #chat-display {
+            flex: 1;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px 0;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            padding: 12px 18px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+
+        .user-msg {
+            align-self: flex-end;
+            background: rgba(100, 150, 255, 0.2);
+            border: 1px solid rgba(100, 150, 255, 0.3);
+        }
+
+        .ai-msg {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* 5. FIXED CHAT BOX (BOTTOM) */
+        .input-area {
+            width: 90%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 10px;
+            color: white;
+            outline: none;
+        }
+
+        button {
+            background: #4ecca3;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: #1a1a2e;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #45b391;
+            transform: translateY(-2px);
+        }
+
+        /* FOOTER */
+        footer {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <h1>VEDA</h1>
-  <div class="settings-btn" onclick="toggleModal()">⚙</div>
-</header>
+    <header class="glass-panel">
+        <h1>Veda App</h1>
+        <p>AI Comparison Interface</p>
+        <select id="modelSelect" class="model-selector">
+            <option value="gemini">Gemini API</option>
+            <option value="claude">Claude API</option>
+        </select>
+    </header>
 
-<div id="chat-history"></div>
+    <div id="chat-display">
+        <div class="message ai-msg">Hello! Select a model above and type a message to start testing.</div>
+    </div>
 
-<div class="footer-input-container">
-  <div class="input-wrapper">
-    <select id="model-select">
-      <option value="gemini">Gemini 3 Flash</option>
-      <option value="claude">Claude 4.6 Sonnet</option>
-    </select>
-    <input type="text" id="user-input" placeholder="Seek knowledge..." onkeypress="if(event.key==='Enter') sendMessage()">
-    <button onclick="sendMessage()" style="background:none; border:none; color:var(--gold); cursor:pointer; font-size:1.2rem; padding: 0 10px;">➤</button>
-  </div>
-</div>
+    <div class="input-area glass-panel">
+        <input type="text" id="userInput" placeholder="Type your message here..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
 
-<div id="key-modal">
-  <div class="modal-content">
-    <h3 style="font-family:Cinzel; color:var(--gold); margin-top:0;">Temple Gateways</h3>
-    <p style="font-size: 0.8rem; color: var(--parchment); opacity: 0.6; margin-bottom: 15px;">Enter your API keys to begin.</p>
-    <input type="password" id="gemini-key-input" class="key-input" placeholder="Gemini Key (AIza...)">
-    <input type="password" id="claude-key-input" class="key-input" placeholder="Claude Key (sk-ant...)">
-    <button onclick="saveKeys()" style="width:100%; margin-top:15px; padding:12px; border-radius:10px; background:linear-gradient(to right, var(--saffron), var(--gold)); border:none; color:var(--deep); font-family:Cinzel; font-weight:bold; cursor:pointer;">ACTIVATE</button>
-    <p onclick="toggleModal()" style="font-size:0.75rem; color:var(--gold); margin-top:15px; cursor:pointer; text-decoration: underline;">Stay in Silence (Close)</p>
-  </div>
-</div>
+    <footer>Veda App v1.0</footer>
 
-<script>
-  // Setup: Auto-load keys into inputs if they exist
-  window.onload = () => {
-    document.getElementById('claude-key-input').value = localStorage.getItem('veda_claude_key') || '';
-    document.getElementById('gemini-key-input').value = localStorage.getItem('veda_gemini_key') || '';
-    if (!localStorage.getItem('veda_gemini_key') && !localStorage.getItem('veda_claude_key')) toggleModal();
-  };
+    <script>
+        // THIS IS THE BRAIN OF THE APP
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const display = document.getElementById('chat-display');
+            const model = document.getElementById('modelSelect').value;
 
-  function toggleModal() {
-    const m = document.getElementById('key-modal');
-    m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-  }
+            if (input.value.trim() === "") return;
 
-  function saveKeys() {
-    const c = document.getElementById('claude-key-input').value.trim();
-    const g = document.getElementById('gemini-key-input').value.trim();
-    if (c) localStorage.setItem('veda_claude_key', c);
-    if (g) localStorage.setItem('veda_gemini_key', g);
-    toggleModal();
-    alert("Scrolls Updated.");
-  }
+            // 1. Add User Message to screen
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-msg';
+            userDiv.innerText = input.value;
+            display.appendChild(userDiv);
 
-  async function sendMessage() {
-    const input = document.getElementById('user-input');
-    const history = document.getElementById('chat-history');
-    const modelType = document.getElementById('model-select').value;
-    
-    if (!input.value.trim()) return;
+            // 2. Simulate AI Response (We will connect your real API keys next)
+            const aiDiv = document.createElement('div');
+            aiDiv.className = 'message ai-msg';
+            aiDiv.innerText = `[Responding via ${model.toUpperCase()}...] Connection test successful. We need to plug in your API keys in the next step.`;
+            
+            setTimeout(() => {
+                display.appendChild(aiDiv);
+                display.scrollTop = display.scrollHeight;
+            }, 600);
 
-    const userText = input.value;
-    history.innerHTML += `<div class="message user">${userText}</div>`;
-    input.value = '';
-
-    const responseDiv = document.createElement('div');
-    responseDiv.className = 'message assistant';
-    responseDiv.innerHTML = "<i>Consulting the eternal...</i>";
-    history.appendChild(responseDiv);
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-
-    try {
-      if (modelType === 'claude') {
-        const key = localStorage.getItem('veda_claude_key');
-        if (!key) throw new Error("Missing Claude Key");
-
-        const resp = await fetch("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json", 
-            "x-api-key": key, 
-            "anthropic-version": "2023-06-01", 
-            "anthropic-dangerous-direct-browser-access": "true" 
-          },
-          body: JSON.stringify({ 
-            model: "claude-3-7-sonnet-20250219", // Updated to stable 2026 model
-            max_tokens: 2000, 
-            messages: [{role: "user", content: userText}] 
-          })
-        });
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error.message);
-        responseDiv.innerHTML = marked.parse(data.content[0].text);
-
-      } else {
-        const key = localStorage.getItem('veda_gemini_key');
-        if (!key) throw new Error("Missing Gemini Key");
-
-        // Updated Gemini 3 Endpoint for 2026
-        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ contents: [{ parts: [{ text: userText }] }] })
-        });
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error.message);
-        responseDiv.innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
-      }
-    } catch (err) {
-      console.error(err);
-      responseDiv.innerHTML = `<span style="color:#ff6b6b;">Error: ${err.message}</span><br><small style="opacity:0.5;">Ensure your key is valid and not expired.</small>`;
-    }
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  }
-</script>
+            input.value = ""; // Clear input
+        }
+    </script>
 </body>
 </html>
