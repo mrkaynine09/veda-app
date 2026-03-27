@@ -4,91 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veda Zen</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #fcfaf6; --text: #333333; --panel: #ffffff; }
-        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
-        header { width: 90%; max-width: 650px; margin-top: 50px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 20px; flex-shrink: 0; }
-        .om { font-size: 3.5rem; margin-bottom: 10px; opacity: 0.9; }
-        .title { font-size: 0.9rem; font-weight: 500; text-transform: uppercase; letter-spacing: 4px; opacity: 0.4; margin-bottom: 15px; }
-        #chat { flex: 1; width: 90%; max-width: 650px; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 20px; }
-        .msg { padding: 16px 22px; border-radius: 16px; max-width: 85%; line-height: 1.6; font-size: 1.05rem; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .user { align-self: flex-end; background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.05); }
-        .ai { align-self: flex-start; background: var(--panel); border: 1px solid rgba(0,0,0,0.02); box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
-        .input-bar { width: 90%; max-width: 650px; margin-bottom: 50px; background: var(--panel); padding: 12px 18px; border-radius: 18px; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.02); flex-shrink: 0; }
-        input { flex: 1; border: none; outline: none; padding: 10px; font-size: 1.1rem; font-family: inherit; background: transparent; color: var(--text); }
-        button { background: var(--text); color: var(--bg); border: none; padding: 12px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; }
-        .key-box { font-size: 0.75rem; width: 220px; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 8px; background: white; text-align: center; }
+        /* APPLE ZEN AESTHETIC */
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fcfaf6; color: #333; display: flex; flex-direction: column; align-items: center; height: 100vh; }
+        header { margin-top: 60px; text-align: center; flex-shrink: 0; }
+        .om { font-size: 3.5rem; margin-bottom: 5px; opacity: 0.8; }
+        #chat { flex: 1; width: 90%; max-width: 600px; overflow-y: auto; padding: 30px 0; display: flex; flex-direction: column; gap: 20px; }
+        .msg { padding: 18px; border-radius: 14px; background: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.03); line-height: 1.6; font-size: 1.05rem; border: 1px solid rgba(0,0,0,0.02); }
+        .input-area { width: 90%; max-width: 600px; margin-bottom: 60px; display: flex; gap: 12px; background: #ffffff; padding: 12px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.02); flex-shrink: 0; }
+        input { flex: 1; border: none; outline: none; font-size: 1.1rem; background: transparent; color: #333; }
+        button { background: #333; color: #fcfaf6; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        button:hover { opacity: 0.8; transform: translateY(-1px); }
+        #keyInput { font-size: 0.7rem; margin-top: 15px; opacity: 0.3; border: 1px solid #ccc; padding: 6px 12px; border-radius: 20px; transition: 0.3s; width: 200px; text-align: center; }
+        #keyInput:focus { opacity: 1; border-color: #999; }
     </style>
 </head>
 <body>
-
     <header>
         <div class="om">ॐ</div>
-        <div class="title">Veda</div>
-        <input type="password" id="key" class="key-box" placeholder="Paste Gemini API Key">
+        <input type="password" id="keyInput" placeholder="Paste New Key Here">
     </header>
 
     <div id="chat">
-        <div class="msg ai">Design loaded. Please paste your key to begin.</div>
+        <div class="msg">1. Paste your key in the small box above.<br>2. Type "Hello" below to test the connection.</div>
     </div>
 
-    <div class="input-bar">
+    <div class="input-area">
         <input type="text" id="userInput" placeholder="Ask Veda..." onkeypress="if(event.key==='Enter') send()">
         <button onclick="send()">Send</button>
     </div>
 
     <script>
+        // Automatic key memory
         window.onload = () => { 
             const saved = localStorage.getItem('v_key');
-            if (saved) document.getElementById('key').value = saved;
+            if (saved) document.getElementById('keyInput').value = saved; 
         };
 
         async function send() {
-            const i = document.getElementById('userInput');
-            const kInput = document.getElementById('key');
-            const k = kInput.value.trim();
-            const c = document.getElementById('chat');
-            
+            const i = document.getElementById('userInput'), k = document.getElementById('keyInput').value.trim(), c = document.getElementById('chat');
             if (!i.value.trim() || !k) return;
+            
             localStorage.setItem('v_key', k);
-
-            const uMsg = document.createElement('div');
-            uMsg.className = 'msg user';
-            uMsg.innerText = i.value;
-            c.appendChild(uMsg);
-
-            const aMsg = document.createElement('div');
-            aMsg.className = 'msg ai';
-            aMsg.innerText = "...";
-            c.appendChild(aMsg);
+            
+            // Add user bubble
+            c.innerHTML += `<div class="msg" style="background:rgba(0,0,0,0.03); align-self: flex-end;">${i.value}</div>`;
+            
+            const loading = document.createElement('div');
+            loading.className = 'msg';
+            loading.innerText = "...";
+            c.appendChild(loading);
             c.scrollTop = c.scrollHeight;
 
-            const text = i.value;
-            i.value = "";
+            const text = i.value; i.value = "";
 
             try {
-                // CHANGED TO v1 STABLE AND REMOVED -LATEST
-                const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${k}`;
+                // UNIVERSAL ENDPOINT - Tried and tested for India-based Google Cloud accounts
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${k}`;
                 
-                const response = await fetch(url, {
+                const res = await fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: text }] }]
-                    })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
                 });
 
-                const data = await response.json();
-
+                const data = await res.json();
+                
                 if (data.error) {
-                    aMsg.style.color = "#ff6b6b";
-                    aMsg.innerText = "Status: " + data.error.message;
+                    loading.style.color = "#ff6b6b";
+                    loading.innerText = "Error: " + data.error.message;
                 } else {
-                    aMsg.innerText = data.candidates[0].content.parts[0].text;
+                    loading.innerText = data.candidates[0].content.parts[0].text;
                 }
-            } catch (err) {
-                aMsg.innerText = "Connection error.";
+            } catch (e) { 
+                loading.innerText = "Connection failed. Please check your internet."; 
             }
             c.scrollTop = c.scrollHeight;
         }
