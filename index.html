@@ -6,7 +6,7 @@
     <title>Veda Zen</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #fcfaf6; --text: #333333; --panel: #ffffff; }
+        :root { --bg: #fcfaf6; --text: #333333; --panel: #ffffff; --accent: #8b6914; }
         * { box-sizing: border-box; }
         body {
             margin: 0; padding: 0;
@@ -16,74 +16,106 @@
             height: 100vh;
         }
         header {
-            width: 90%; max-width: 650px;
-            margin-top: 40px;
-            text-align: center;
+            width: 90%; max-width: 700px;
+            margin-top: 30px; text-align: center;
             border-bottom: 1px solid rgba(0,0,0,0.06);
-            padding-bottom: 20px;
-            flex-shrink: 0;
+            padding-bottom: 16px; flex-shrink: 0;
         }
-        .om { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; margin-bottom: 6px; opacity: 0.85; }
-        .title { font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 5px; opacity: 0.35; margin-bottom: 14px; }
+        .om { font-family: 'Cormorant Garamond', serif; font-size: 3rem; margin-bottom: 4px; opacity: 0.85; }
+        .title { font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 5px; opacity: 0.35; margin-bottom: 12px; }
         .key-box {
-            font-size: 0.78rem; width: 260px;
+            font-size: 0.75rem; width: 250px;
             border: 1px solid rgba(0,0,0,0.1); border-radius: 8px;
-            padding: 9px 12px; background: white;
-            text-align: center; outline: none;
-            font-family: inherit; color: var(--text);
-            transition: border-color 0.2s;
+            padding: 8px 12px; background: white; text-align: center;
+            outline: none; font-family: inherit; color: var(--text);
         }
-        .key-box:focus { border-color: rgba(0,0,0,0.25); }
+
         #chat {
-            flex: 1; width: 90%; max-width: 650px;
-            overflow-y: auto; padding: 24px 0;
-            display: flex; flex-direction: column; gap: 18px;
+            flex: 1; width: 90%; max-width: 700px;
+            overflow-y: auto; padding: 20px 0;
+            display: flex; flex-direction: column; gap: 16px;
         }
+
+        /* Verse card */
+        .verse-card {
+            background: white; border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 16px; padding: 20px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .verse-meta {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--accent); margin-bottom: 12px; font-weight: 600;
+        }
+        .verse-sanskrit {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem; line-height: 1.8;
+            margin-bottom: 10px; color: #1a1a1a;
+        }
+        .verse-transliteration {
+            font-size: 0.85rem; color: #666; font-style: italic;
+            margin-bottom: 10px; line-height: 1.7;
+        }
+        .verse-translation {
+            font-size: 0.95rem; line-height: 1.7; color: #444;
+            border-top: 1px solid rgba(0,0,0,0.05); padding-top: 10px; margin-top: 10px;
+        }
+        .verse-explanation {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem; line-height: 1.7; color: #555;
+            border-top: 1px solid rgba(0,0,0,0.05); padding-top: 10px; margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Filter results list */
+        .filter-result {
+            background: white; border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 12px; padding: 14px 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+        .filter-result-title {
+            font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;
+        }
+        .filter-result-meta {
+            font-size: 0.78rem; color: #888;
+        }
+
+        /* Chat bubbles */
         .msg {
-            padding: 15px 20px; border-radius: 16px;
-            max-width: 85%; line-height: 1.65; font-size: 1rem;
+            padding: 14px 18px; border-radius: 14px;
+            max-width: 85%; line-height: 1.6; font-size: 0.95rem;
             white-space: pre-wrap;
         }
-        .user {
-            align-self: flex-end;
-            background: rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.06);
-        }
+        .user { align-self: flex-end; background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.06); }
         .ai {
-            align-self: flex-start;
-            background: var(--panel);
+            align-self: flex-start; background: white;
             border: 1px solid rgba(0,0,0,0.04);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            font-family: 'Cormorant Garamond', serif; font-size: 1.05rem;
         }
-        .ai.error { color: #c0392b; font-family: 'Inter', sans-serif; font-size: 0.9rem; }
-        .disclaimer {
-            font-size: 0.7rem; opacity: 0.35; text-align: center;
-            margin-top: -10px; margin-bottom: 6px;
-            font-family: 'Inter', sans-serif;
-        }
+        .ai.error { color: #c0392b; font-family: 'Inter', sans-serif; font-size: 0.85rem; }
+        .ai.loading { opacity: 0.5; }
+
         .input-bar {
-            width: 90%; max-width: 650px; margin-bottom: 10px;
-            background: var(--panel); padding: 10px 14px;
-            border-radius: 18px; display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.07);
+            width: 90%; max-width: 700px; margin-bottom: 8px;
+            background: white; padding: 8px 12px;
+            border-radius: 16px; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.07);
             border: 1px solid rgba(0,0,0,0.04); flex-shrink: 0;
         }
         input[type="text"] {
             flex: 1; border: none; outline: none;
-            padding: 10px; font-size: 1rem;
+            padding: 10px; font-size: 0.95rem;
             font-family: inherit; background: transparent; color: var(--text);
         }
         button {
             background: var(--text); color: var(--bg);
-            border: none; padding: 11px 24px;
-            border-radius: 12px; font-weight: 600;
-            cursor: pointer; font-size: 0.9rem;
-            transition: opacity 0.15s;
+            border: none; padding: 10px 22px;
+            border-radius: 10px; font-weight: 600;
+            cursor: pointer; font-size: 0.85rem; transition: opacity 0.15s;
         }
         button:hover { opacity: 0.75; }
-        button:disabled { opacity: 0.4; cursor: not-allowed; }
+        button:disabled { opacity: 0.35; cursor: not-allowed; }
+        .hint { font-size: 0.68rem; opacity: 0.3; text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -95,105 +127,314 @@
 </header>
 
 <div id="chat">
-    <div class="msg ai">Namaste. Paste your Anthropic API key above, then ask me anything — about dharma, the self, or the nature of reality.</div>
+    <div class="msg ai">Namaste. You can ask me things like:<br><br>
+- "Give me Sukta 15 of Mandala 1"<br>
+- "Show all suktas by Vishwamitra in Mandala 3"<br>
+- "List suktas in Gayatri metre from Mandala 1"<br>
+- "Show suktas to Agni in Mandala 2"<br><br>
+Or just ask me anything about Vedic philosophy.</div>
 </div>
 
 <div class="input-bar">
     <input type="text" id="userInput" placeholder="Ask Veda..." onkeypress="if(event.key==='Enter') send()">
     <button id="sendBtn" onclick="send()">Send</button>
 </div>
-<div class="disclaimer">Veda may make mistakes. Always verify with original texts.</div>
+<div class="hint">Verses sourced from Vedic Heritage Portal via DharmicData · Always verify with original texts</div>
 
 <script>
-    const history = [];
+const SYSTEM_PROMPT = `You are Veda, a wise spiritual guide specializing in Vedic scriptures, especially the Rigveda.
 
-    // ✅ IMPROVEMENT 1: Stricter system prompt — tells the model to admit uncertainty
-    const SYSTEM_PROMPT = `You are Veda, a serene and wise spiritual guide rooted in the teachings of ancient Indian philosophy — the Vedas, Upanishads, Bhagavad Gita, and Vedanta.
+When given raw Sanskrit verse data, you must:
+1. Provide the IAST transliteration of each verse
+2. Provide a faithful English translation verse by verse
+3. Give a brief spiritual/philosophical explanation of the sukta as a whole
 
-You speak with calm, compassionate clarity. You weave in Sanskrit terms where relevant (with gentle explanations).
-You help seekers explore dharma, karma, the nature of the self (Atman), consciousness, meditation, and the path to inner peace.
-Keep responses warm, thoughtful, and concise — never preachy. You are a guide, not a preacher.
+Format your response EXACTLY like this for each verse:
+---VERSE [number]---
+SANSKRIT: [the sanskrit text as given]
+TRANSLITERATION: [IAST transliteration]
+TRANSLATION: [English translation]
+---END---
+EXPLANATION: [2-3 sentences on the spiritual significance of this sukta]
 
-IMPORTANT RULES FOR ACCURACY:
-- Never fabricate Sanskrit verses or slokas. Only quote verses you are certain about.
-- Never attribute a quote to a specific text (e.g. Gita Chapter 2, Verse 47) unless you are fully certain it is correct.
-- If you are unsure about something, say so clearly: "I'm not certain, but..." or "You may want to verify this in the original text."
-- It is better to say less and be accurate than to say more and be wrong.
-- Never invent names of sages, texts, or concepts.`;
+Rules:
+- Never fabricate or alter verses. Only work with the Sanskrit text provided to you.
+- If unsure of a transliteration, indicate it with [?]
+- Be accurate, scholarly, and reverent.`;
 
-    window.onload = () => {
-        const saved = sessionStorage.getItem('v_key');
-        if (saved) document.getElementById('key').value = saved;
-    };
+const chatHistory = [];
+const mandalaCache = {};
 
-    async function send() {
-        const input = document.getElementById('userInput');
-        const keyInput = document.getElementById('key');
-        const btn = document.getElementById('sendBtn');
-        const chat = document.getElementById('chat');
+window.onload = () => {
+    const saved = sessionStorage.getItem('v_key');
+    if (saved) document.getElementById('key').value = saved;
+};
 
-        const key = keyInput.value.trim();
-        const text = input.value.trim();
-        if (!text || !key) return;
+// ── Fetch a Mandala JSON from GitHub ──────────────────────────
+async function fetchMandala(num) {
+    if (mandalaCache[num]) return mandalaCache[num];
+    const url = `https://raw.githubusercontent.com/bhavykhatri/DharmicData/main/Rigveda/rigveda_mandala_${num}.json`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Could not load Mandala ${num} data.`);
+    const data = await res.json();
+    mandalaCache[num] = data;
+    return data;
+}
 
-        sessionStorage.setItem('v_key', key);
+// ── Parse user intent ─────────────────────────────────────────
+function parseIntent(text) {
+    const t = text.toLowerCase();
 
-        const uMsg = document.createElement('div');
-        uMsg.className = 'msg user';
-        uMsg.innerText = text;
-        chat.appendChild(uMsg);
+    // "sukta X of mandala Y" or "mandala Y sukta X"
+    const suktaMatch =
+        t.match(/sukta[m]?\s+(\d+)\s+(?:of\s+)?mandala\s+(\d+)/) ||
+        t.match(/mandala\s+(\d+)\s+sukta[m]?\s+(\d+)/) ||
+        t.match(/(\d+)[.\-](\d+)/);
 
-        const aMsg = document.createElement('div');
-        aMsg.className = 'msg ai';
-        aMsg.innerText = '…';
-        chat.appendChild(aMsg);
-        chat.scrollTop = chat.scrollHeight;
+    if (suktaMatch) {
+        // figure out which group is mandala vs sukta
+        let m, s;
+        if (t.match(/sukta[m]?\s+(\d+)\s+(?:of\s+)?mandala\s+(\d+)/)) {
+            const r = t.match(/sukta[m]?\s+(\d+)\s+(?:of\s+)?mandala\s+(\d+)/);
+            s = parseInt(r[1]); m = parseInt(r[2]);
+        } else if (t.match(/mandala\s+(\d+)\s+sukta[m]?\s+(\d+)/)) {
+            const r = t.match(/mandala\s+(\d+)\s+sukta[m]?\s+(\d+)/);
+            m = parseInt(r[1]); s = parseInt(r[2]);
+        } else {
+            m = parseInt(suktaMatch[1]); s = parseInt(suktaMatch[2]);
+        }
+        return { type: 'sukta', mandala: m, sukta: s };
+    }
 
-        input.value = '';
-        btn.disabled = true;
+    // Filter by rishi
+    const rishiMatch = t.match(/(?:by|rishi|sage)\s+([a-z]+).*mandala\s+(\d+)/) ||
+                       t.match(/mandala\s+(\d+).*(?:by|rishi|sage)\s+([a-z]+)/);
+    if (rishiMatch) {
+        const mandala = parseInt(rishiMatch[1]) || parseInt(rishiMatch[2]);
+        const rishi = (rishiMatch[2] || rishiMatch[1]);
+        return { type: 'filter', filter: 'rishi', value: rishi, mandala };
+    }
 
-        history.push({ role: 'user', content: text });
+    // Filter by metre/chandas
+    const metreMatch = t.match(/(?:metre|meter|chandas)\s+([a-z]+).*mandala\s+(\d+)/) ||
+                       t.match(/([a-z]+)\s+(?:metre|meter|chandas).*mandala\s+(\d+)/) ||
+                       t.match(/mandala\s+(\d+).*(?:metre|meter|chandas)\s+([a-z]+)/);
+    if (metreMatch) {
+        const mandala = parseInt(metreMatch[2]) || parseInt(metreMatch[1]);
+        const metre = metreMatch[2] || metreMatch[1];
+        return { type: 'filter', filter: 'metre', value: metre, mandala };
+    }
 
-        try {
-            const response = await fetch('https://api.anthropic.com/v1/messages', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': key,
-                    'anthropic-version': '2023-06-01',
-                    'anthropic-dangerous-direct-browser-access': 'true'
-                },
-                body: JSON.stringify({
-                    // ✅ IMPROVEMENT 2: Upgraded from haiku to sonnet — much more accurate
-                    model: 'claude-sonnet-4-5',
-                    // ✅ IMPROVEMENT 3: Lower max_tokens — shorter answers = less drift
-                    max_tokens: 512,
-                    system: SYSTEM_PROMPT,
-                    messages: history
-                })
-            });
+    // Filter by devata/god
+    const devataMatch = t.match(/(?:to|devata|god|deity)\s+([a-z]+).*mandala\s+(\d+)/) ||
+                        t.match(/mandala\s+(\d+).*(?:to|devata|god|deity)\s+([a-z]+)/);
+    if (devataMatch) {
+        const mandala = parseInt(devataMatch[2]) || parseInt(devataMatch[1]);
+        const devata = devataMatch[2] || devataMatch[1];
+        return { type: 'filter', filter: 'devata', value: devata, mandala };
+    }
 
-            const data = await response.json();
+    return { type: 'chat' };
+}
 
-            if (data.error) {
-                aMsg.classList.add('error');
-                aMsg.innerText = `Error: ${data.error.message}`;
-                history.pop();
+// ── Render a verse card ───────────────────────────────────────
+function renderVerseCard(suktaData, aiText, container) {
+    const card = document.createElement('div');
+    card.className = 'verse-card';
+
+    const meta = document.createElement('div');
+    meta.className = 'verse-meta';
+    meta.textContent = `Mandala ${suktaData.mandala} · Sukta ${suktaData.sukta_number} · ${suktaData.deity || ''} · Rishi: ${suktaData.rishi || ''} · Metre: ${suktaData.meter || ''}`;
+    card.appendChild(meta);
+
+    // Parse AI response for each verse
+    const verseBlocks = aiText.split(/---VERSE \d+---/).filter(b => b.trim());
+    verseBlocks.forEach(block => {
+        const skt = block.match(/SANSKRIT:\s*([\s\S]*?)(?=TRANSLITERATION:|$)/)?.[1]?.trim();
+        const trn = block.match(/TRANSLITERATION:\s*([\s\S]*?)(?=TRANSLATION:|$)/)?.[1]?.trim();
+        const trl = block.match(/TRANSLATION:\s*([\s\S]*?)(?=---|EXPLANATION:|$)/)?.[1]?.trim();
+
+        if (skt) {
+            const s = document.createElement('div');
+            s.className = 'verse-sanskrit';
+            s.textContent = skt;
+            card.appendChild(s);
+        }
+        if (trn) {
+            const t = document.createElement('div');
+            t.className = 'verse-transliteration';
+            t.textContent = trn;
+            card.appendChild(t);
+        }
+        if (trl) {
+            const t = document.createElement('div');
+            t.className = 'verse-translation';
+            t.textContent = trl;
+            card.appendChild(t);
+        }
+    });
+
+    // Explanation
+    const expMatch = aiText.match(/EXPLANATION:\s*([\s\S]*)/);
+    if (expMatch) {
+        const exp = document.createElement('div');
+        exp.className = 'verse-explanation';
+        exp.textContent = expMatch[1].trim();
+        card.appendChild(exp);
+    }
+
+    container.appendChild(card);
+}
+
+// ── Render filter results ─────────────────────────────────────
+function renderFilterResults(results, filterType, filterValue, container) {
+    const header = document.createElement('div');
+    header.className = 'msg ai';
+    header.textContent = `Found ${results.length} sukta(s) matching ${filterType}: "${filterValue}"`;
+    container.appendChild(header);
+
+    results.slice(0, 20).forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'filter-result';
+        const title = document.createElement('div');
+        title.className = 'filter-result-title';
+        title.textContent = `Mandala ${s.mandala_number || s.mandala} · Sukta ${s.sukta_number || s.sukta}`;
+        const meta = document.createElement('div');
+        meta.className = 'filter-result-meta';
+        meta.textContent = `Rishi: ${s.rishi || '—'} · Deity: ${s.deity || '—'} · Metre: ${s.meter || s.metre || '—'}`;
+        card.appendChild(title);
+        card.appendChild(meta);
+        container.appendChild(card);
+    });
+
+    if (results.length > 20) {
+        const more = document.createElement('div');
+        more.className = 'msg ai';
+        more.textContent = `...and ${results.length - 20} more. Try narrowing your filter.`;
+        container.appendChild(more);
+    }
+}
+
+// ── Call Claude API ───────────────────────────────────────────
+async function callClaude(key, userMessage, systemOverride) {
+    chatHistory.push({ role: 'user', content: userMessage });
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': key,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+            model: 'claude-sonnet-4-5',
+            max_tokens: 2048,
+            system: systemOverride || SYSTEM_PROMPT,
+            messages: chatHistory
+        })
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+    const reply = data.content[0].text;
+    chatHistory.push({ role: 'assistant', content: reply });
+    return reply;
+}
+
+// ── Main send ────────────────────────────────────────────────
+async function send() {
+    const input = document.getElementById('userInput');
+    const keyInput = document.getElementById('key');
+    const btn = document.getElementById('sendBtn');
+    const chat = document.getElementById('chat');
+
+    const key = keyInput.value.trim();
+    const text = input.value.trim();
+    if (!text || !key) return;
+
+    sessionStorage.setItem('v_key', key);
+
+    // User bubble
+    const uMsg = document.createElement('div');
+    uMsg.className = 'msg user';
+    uMsg.textContent = text;
+    chat.appendChild(uMsg);
+
+    // Loading bubble
+    const loading = document.createElement('div');
+    loading.className = 'msg ai loading';
+    loading.textContent = '…';
+    chat.appendChild(loading);
+    chat.scrollTop = chat.scrollHeight;
+
+    input.value = '';
+    btn.disabled = true;
+
+    const intent = parseIntent(text);
+
+    try {
+        if (intent.type === 'sukta') {
+            loading.textContent = `Loading Mandala ${intent.mandala}…`;
+            const mandalaData = await fetchMandala(intent.mandala);
+
+            // Find the sukta
+            const suktas = Array.isArray(mandalaData) ? mandalaData : mandalaData.suktas || mandalaData;
+            const sukta = suktas.find(s =>
+                parseInt(s.sukta_number || s.sukta) === intent.sukta
+            );
+
+            if (!sukta) {
+                loading.className = 'msg ai error';
+                loading.textContent = `Sukta ${intent.sukta} not found in Mandala ${intent.mandala}.`;
             } else {
-                const reply = data.content[0].text;
-                aMsg.innerText = reply;
-                history.push({ role: 'assistant', content: reply });
+                loading.textContent = 'Translating and explaining…';
+                const verses = sukta.verses || sukta.mantras || [];
+                const verseTexts = verses.map((v, i) =>
+                    `Verse ${i + 1}: ${v.text || v.sanskrit || v.mantra || JSON.stringify(v)}`
+                ).join('\n\n');
+
+                const prompt = `Here are the Sanskrit verses of Rigveda Mandala ${intent.mandala}, Sukta ${intent.sukta} (Deity: ${sukta.deity || 'unknown'}, Rishi: ${sukta.rishi || 'unknown'}, Metre: ${sukta.meter || 'unknown'}):\n\n${verseTexts}\n\nPlease provide transliteration, translation, and explanation as instructed.`;
+
+                const aiReply = await callClaude(key, prompt);
+                loading.remove();
+                renderVerseCard({ ...sukta, mandala: intent.mandala }, aiReply, chat);
             }
 
-        } catch (err) {
-            aMsg.classList.add('error');
-            aMsg.innerText = 'Connection error: ' + err.message;
-            history.pop();
+        } else if (intent.type === 'filter') {
+            loading.textContent = `Loading Mandala ${intent.mandala}…`;
+            const mandalaData = await fetchMandala(intent.mandala);
+            const suktas = Array.isArray(mandalaData) ? mandalaData : mandalaData.suktas || mandalaData;
+
+            const val = intent.value.toLowerCase();
+            const filtered = suktas.filter(s => {
+                if (intent.filter === 'rishi') return (s.rishi || '').toLowerCase().includes(val);
+                if (intent.filter === 'metre') return (s.meter || s.metre || '').toLowerCase().includes(val);
+                if (intent.filter === 'devata') return (s.deity || s.devata || '').toLowerCase().includes(val);
+                return false;
+            });
+
+            loading.remove();
+            renderFilterResults(filtered, intent.filter, intent.value, chat);
+
+        } else {
+            // Pure chat — Veda as spiritual guide
+            const reply = await callClaude(key, text,
+                `You are Veda, a serene and wise spiritual guide rooted in ancient Indian philosophy.
+Speak with calm clarity. Weave in Sanskrit terms with gentle explanations.
+Never fabricate verses or citations. If unsure, say so honestly.
+Keep responses warm, thoughtful, and concise.`
+            );
+            loading.className = 'msg ai';
+            loading.textContent = reply;
         }
 
-        btn.disabled = false;
-        chat.scrollTop = chat.scrollHeight;
+    } catch (err) {
+        loading.className = 'msg ai error';
+        loading.textContent = 'Error: ' + err.message;
     }
+
+    btn.disabled = false;
+    chat.scrollTop = chat.scrollHeight;
+}
 </script>
 </body>
 </html>
