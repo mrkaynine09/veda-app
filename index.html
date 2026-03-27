@@ -58,8 +58,13 @@
             font-size: 1.1rem;
         }
         .ai.error { color: #c0392b; font-family: 'Inter', sans-serif; font-size: 0.9rem; }
+        .disclaimer {
+            font-size: 0.7rem; opacity: 0.35; text-align: center;
+            margin-top: -10px; margin-bottom: 6px;
+            font-family: 'Inter', sans-serif;
+        }
         .input-bar {
-            width: 90%; max-width: 650px; margin-bottom: 40px;
+            width: 90%; max-width: 650px; margin-bottom: 10px;
             background: var(--panel); padding: 10px 14px;
             border-radius: 18px; display: flex; align-items: center; gap: 10px;
             box-shadow: 0 15px 45px rgba(0,0,0,0.07);
@@ -97,14 +102,24 @@
     <input type="text" id="userInput" placeholder="Ask Veda..." onkeypress="if(event.key==='Enter') send()">
     <button id="sendBtn" onclick="send()">Send</button>
 </div>
+<div class="disclaimer">Veda may make mistakes. Always verify with original texts.</div>
 
 <script>
     const history = [];
 
+    // ✅ IMPROVEMENT 1: Stricter system prompt — tells the model to admit uncertainty
     const SYSTEM_PROMPT = `You are Veda, a serene and wise spiritual guide rooted in the teachings of ancient Indian philosophy — the Vedas, Upanishads, Bhagavad Gita, and Vedanta.
+
 You speak with calm, compassionate clarity. You weave in Sanskrit terms where relevant (with gentle explanations).
 You help seekers explore dharma, karma, the nature of the self (Atman), consciousness, meditation, and the path to inner peace.
-Keep responses warm, thoughtful, and concise — never preachy. You are a guide, not a preacher.`;
+Keep responses warm, thoughtful, and concise — never preachy. You are a guide, not a preacher.
+
+IMPORTANT RULES FOR ACCURACY:
+- Never fabricate Sanskrit verses or slokas. Only quote verses you are certain about.
+- Never attribute a quote to a specific text (e.g. Gita Chapter 2, Verse 47) unless you are fully certain it is correct.
+- If you are unsure about something, say so clearly: "I'm not certain, but..." or "You may want to verify this in the original text."
+- It is better to say less and be accurate than to say more and be wrong.
+- Never invent names of sages, texts, or concepts.`;
 
     window.onload = () => {
         const saved = sessionStorage.getItem('v_key');
@@ -149,8 +164,10 @@ Keep responses warm, thoughtful, and concise — never preachy. You are a guide,
                     'anthropic-dangerous-direct-browser-access': 'true'
                 },
                 body: JSON.stringify({
-                    model: 'claude-haiku-4-5',
-                    max_tokens: 1024,
+                    // ✅ IMPROVEMENT 2: Upgraded from haiku to sonnet — much more accurate
+                    model: 'claude-sonnet-4-5',
+                    // ✅ IMPROVEMENT 3: Lower max_tokens — shorter answers = less drift
+                    max_tokens: 512,
                     system: SYSTEM_PROMPT,
                     messages: history
                 })
@@ -180,11 +197,3 @@ Keep responses warm, thoughtful, and concise — never preachy. You are a guide,
 </script>
 </body>
 </html>
-```
-
-Since it's going on public GitHub, also add a `README.md` that says:
-```
-## Usage
-1. Download index.html
-2. Open it in your browser
-3. Paste your own Anthropic API key (get one at console.anthropic.com)
