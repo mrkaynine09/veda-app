@@ -3,29 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veda App - Universal</title>
+    <title>Veda App - Stable</title>
     <style>
         body { margin: 0; padding: 0; font-family: sans-serif; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; height: 100vh; }
         .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; width: 90%; max-width: 600px; margin-top: 20px; text-align: center; }
-        input { width: 80%; padding: 10px; margin: 10px 0; border-radius: 8px; border: 1px solid #4ecca3; background: #1e293b; color: white; }
-        #chat { flex: 1; width: 90%; max-width: 600px; overflow-y: auto; margin: 20px 0; }
-        .msg { padding: 10px; margin: 5px 0; border-radius: 10px; background: rgba(255,255,255,0.1); }
-        .user { background: rgba(59, 130, 246, 0.2); text-align: right; }
+        input { width: 85%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #4ecca3; background: #1e293b; color: white; font-size: 1rem; }
+        #chat { flex: 1; width: 90%; max-width: 600px; overflow-y: auto; margin: 20px 0; padding: 10px; }
+        .msg { padding: 12px; margin: 8px 0; border-radius: 12px; background: rgba(255,255,255,0.1); line-height: 1.5; white-space: pre-wrap; }
+        .user { background: rgba(59, 130, 246, 0.3); align-self: flex-end; }
+        .error { color: #ff6b6b; border: 1px solid #ff6b6b; }
+        button { padding: 12px 25px; border-radius: 8px; background: #4ecca3; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; }
     </style>
 </head>
 <body>
     <div class="glass">
-        <h2>Veda App</h2>
-        <input type="password" id="key" placeholder="Enter API Key Here">
+        <h2 style="margin:0 0 10px 0;">Veda App</h2>
+        <input type="password" id="key" placeholder="Paste Gemini API Key">
     </div>
-    <div id="chat"></div>
-    <div class="glass" style="margin-bottom: 20px;">
-        <input type="text" id="userInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter') send()">
-        <button onclick="send()" style="padding: 10px 20px; border-radius: 8px; background: #4ecca3; border: none; font-weight: bold; cursor: pointer;">Send</button>
+
+    <div id="chat" style="display: flex; flex-direction: column;">
+        <div class="msg">Connection fixed. Paste your key above and try again!</div>
+    </div>
+
+    <div class="glass" style="margin-bottom: 30px; display: flex; gap: 10px;">
+        <input type="text" id="userInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter') send()">
+        <button onclick="send()">Send</button>
     </div>
 
     <script>
-        window.onload = () => { document.getElementById('key').value = localStorage.getItem('v_key') || ''; };
+        // Load saved key
+        window.onload = () => { 
+            const saved = localStorage.getItem('v_key');
+            if (saved) document.getElementById('key').value = saved;
+        };
 
         async function send() {
             const i = document.getElementById('userInput');
@@ -33,31 +43,50 @@
             const c = document.getElementById('chat');
             if (!i.value || !k) return;
 
+            // Save key locally
             localStorage.setItem('v_key', k);
-            c.innerHTML += `<div class="msg user">${i.value}</div>`;
+
+            // Show User Message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'msg user';
+            userMsg.innerText = i.value;
+            c.appendChild(userMsg);
+
+            // Show Loading
             const loading = document.createElement('div');
             loading.className = 'msg';
-            loading.innerText = "Connecting to Gemini...";
+            loading.innerText = "Connecting...";
             c.appendChild(loading);
+            c.scrollTop = c.scrollHeight;
             
-            const prompt = i.value;
+            const promptText = i.value;
             i.value = "";
 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${k}`, {
+                // CHANGED TO v1 AND UPDATED MODEL PATH
+                const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${k}`;
+                
+                const res = await fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }]
+                    })
                 });
+
                 const data = await res.json();
+
                 if (data.error) {
-                    loading.style.color = "#ff6b6b";
-                    loading.innerText = "Google says: " + data.error.message;
-                } else {
+                    loading.className = 'msg error';
+                    loading.innerText = "Google Error: " + data.error.message;
+                } else if (data.candidates && data.candidates[0].content) {
                     loading.innerText = data.candidates[0].content.parts[0].text;
+                } else {
+                    loading.innerText = "Received empty response from AI.";
                 }
             } catch (e) {
-                loading.innerText = "Fatal Error. Check console.";
+                loading.className = 'msg error';
+                loading.innerText = "Network Error. Please check your connection.";
             }
             c.scrollTop = c.scrollHeight;
         }
