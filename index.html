@@ -17,8 +17,7 @@
         .ai { align-self: flex-start; background: var(--panel); border: 1px solid rgba(0,0,0,0.02); box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
         .input-bar { width: 90%; max-width: 650px; margin-bottom: 50px; background: var(--panel); padding: 12px 18px; border-radius: 18px; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.02); flex-shrink: 0; }
         input { flex: 1; border: none; outline: none; padding: 10px; font-size: 1.1rem; font-family: inherit; background: transparent; color: var(--text); }
-        button { background: var(--text); color: var(--bg); border: none; padding: 12px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        button:hover { opacity: 0.8; }
+        button { background: var(--text); color: var(--bg); border: none; padding: 12px 28px; border-radius: 12px; font-weight: 600; cursor: pointer; }
         .key-box { font-size: 0.75rem; width: 220px; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 8px; background: white; text-align: center; }
     </style>
 </head>
@@ -31,7 +30,7 @@
     </header>
 
     <div id="chat">
-        <div class="msg ai">Model Path Updated. Please paste your key above to connect.</div>
+        <div class="msg ai">Design loaded. Please paste your key to begin.</div>
     </div>
 
     <div class="input-bar">
@@ -61,7 +60,7 @@
 
             const aMsg = document.createElement('div');
             aMsg.className = 'msg ai';
-            aMsg.innerText = "Connecting...";
+            aMsg.innerText = "...";
             c.appendChild(aMsg);
             c.scrollTop = c.scrollHeight;
 
@@ -69,8 +68,8 @@
             i.value = "";
 
             try {
-                // UNIVERSAL PRO PATH - Often fixes the 'Not Found' loop
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${k}`;
+                // CHANGED TO v1 STABLE AND REMOVED -LATEST
+                const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${k}`;
                 
                 const response = await fetch(url, {
                     method: "POST",
@@ -84,12 +83,12 @@
 
                 if (data.error) {
                     aMsg.style.color = "#ff6b6b";
-                    aMsg.innerText = "Error: " + data.error.message;
+                    aMsg.innerText = "Status: " + data.error.message;
                 } else {
                     aMsg.innerText = data.candidates[0].content.parts[0].text;
                 }
             } catch (err) {
-                aMsg.innerText = "Network Error. Check your connection.";
+                aMsg.innerText = "Connection error.";
             }
             c.scrollTop = c.scrollHeight;
         }
