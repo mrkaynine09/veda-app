@@ -18,7 +18,6 @@
         .user { align-self:flex-end; background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.06); }
         .ai { align-self:flex-start; background:white; border:1px solid rgba(0,0,0,0.04); box-shadow:0 4px 20px rgba(0,0,0,0.04); font-family:'Cormorant Garamond',serif; font-size:1.05rem; max-width:88%; }
         .ai.error { color:#c0392b; font-family:'Inter',sans-serif; font-size:.85rem; }
-
         .vcard { background:white; border:1px solid rgba(0,0,0,0.06); border-radius:16px; padding:20px 24px; box-shadow:0 4px 24px rgba(0,0,0,0.05); width:90%; max-width:700px; align-self:flex-start; }
         .vmeta { font-size:.67rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); margin-bottom:16px; font-weight:600; line-height:1.9; font-family:'Inter',sans-serif; }
         .vblock { margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid rgba(0,0,0,0.05); }
@@ -28,11 +27,9 @@
         .vtrn { font-size:.79rem; color:#888; font-style:italic; margin-bottom:6px; line-height:1.6; font-family:'Inter',sans-serif; }
         .vtrl { font-size:.9rem; color:#444; line-height:1.65; font-family:'Inter',sans-serif; }
         .vexp { font-family:'Cormorant Garamond',serif; font-size:1rem; color:#666; font-style:italic; line-height:1.75; margin-top:14px; padding-top:14px; border-top:1px solid rgba(0,0,0,0.06); }
-
         .fcard { background:white; border:1px solid rgba(0,0,0,0.06); border-radius:10px; padding:11px 16px; box-shadow:0 2px 8px rgba(0,0,0,0.03); width:90%; max-width:700px; align-self:flex-start; }
         .ftitle { font-weight:600; font-size:.86rem; margin-bottom:3px; color:var(--gold); }
         .fmeta { font-size:.73rem; color:#aaa; line-height:1.6; }
-
         .input-bar { width:90%; max-width:700px; margin-bottom:6px; background:white; padding:8px 12px; border-radius:16px; display:flex; align-items:center; gap:8px; box-shadow:0 10px 40px rgba(0,0,0,0.07); border:1px solid rgba(0,0,0,0.04); flex-shrink:0; }
         input[type=text] { flex:1; border:none; outline:none; padding:10px; font-size:.95rem; font-family:inherit; background:transparent; color:var(--text); }
         button { background:var(--text); color:var(--bg); border:none; padding:10px 22px; border-radius:10px; font-weight:600; cursor:pointer; font-size:.85rem; transition:opacity .15s; }
@@ -50,9 +47,10 @@
 <div id="chat">
     <div class="msg ai">Namaste. You can say things like:<br><br>
 • "Give me Sukta 15 of Mandala 1"<br>
-• "List suktas by Vishwamitra in Mandala 3"<br>
+• "List all suktas by Vishwamitra across all mandalas"<br>
 • "Show Gayatri metre suktas in Mandala 1"<br>
-• "Find suktas to Agni in Mandala 2"<br><br>
+• "Find suktas to Agni in Mandala 2"<br>
+• "List suktas by Vasishtha in Mandala 7"<br><br>
 Or ask me anything about Vedic philosophy.</div>
 </div>
 <div class="input-bar">
@@ -62,9 +60,8 @@ Or ask me anything about Vedic philosophy.</div>
 <div class="hint">Metadata from Indica dataset · Verses & translation via Claude Sonnet · Always verify with original texts</div>
 
 <script>
-// ── Embedded Rigveda metadata (Indica dataset) ────────────────
-// All 1028 suktas: [mandala, sukta, metre, rishi, devata]
-// Source: aninditabasu/indica (public domain)
+// ── Embedded Rigveda metadata (all 1028 suktas) ───────────────
+// Format: [mandala, sukta, metre, rishi, devata]
 const RV = [
 [1,1,"Gayatri","Madhucchandas Vaishwamitra","Agni"],[1,2,"Gayatri","Madhucchandas Vaishwamitra","Vayu, Indra"],[1,3,"Gayatri","Madhucchandas Vaishwamitra","Ashvins, Indra, Vishvedevas, Sarasvati"],[1,4,"Gayatri","Madhucchandas Vaishwamitra","Indra"],[1,5,"Gayatri","Madhucchandas Vaishwamitra","Indra"],[1,6,"Gayatri","Madhucchandas Vaishwamitra","Indra"],[1,7,"Gayatri","Madhucchandas Vaishwamitra","Indra"],[1,8,"Gayatri","Madhucchandas Vaishwamitra","Indra"],[1,9,"Gayatri","Madhucchandas Vaishwamitra","Indra"],[1,10,"Gayatri","Madhucchandas Vaishwamitra","Indra"],
 [1,11,"Gayatri","Madhucchandas Vaishwamitra","Indra"],[1,12,"Gayatri","Madhucchandas Vaishwamitra","Agni"],[1,13,"Gayatri","Madhucchandas Vaishwamitra","Agni"],[1,14,"Gayatri","Madhucchandas Vaishwamitra","Agni, Vishvedevas"],[1,15,"Gayatri","Madhucchandas Vaishwamitra","Indra, Mitra, Varuna, Agni, Vishvedevas"],[1,16,"Gayatri","Madhucchandas Vaishwamitra","Indra"],[1,17,"Anushtup","Madhucchandas Vaishwamitra","Indra, Varuna"],[1,18,"Anushtup","Madhucchandas Vaishwamitra","Brahmanaspati, Sadaspati, Agni"],[1,19,"Gayatri","Medhatithi Kanva","Agni, Maruts"],[1,20,"Gayatri","Medhatithi Kanva","Ribhus"],
@@ -96,31 +93,31 @@ const RV = [
 [3,31,"Trishtup","Vishwamitra Gathina","Indra"],[3,32,"Trishtup","Vishwamitra Gathina","Indra"],[3,33,"Trishtup","Vishwamitra Gathina","Indra, Vipash, Shutudri"],[3,34,"Trishtup","Vishwamitra Gathina","Indra"],[3,35,"Trishtup","Vishwamitra Gathina","Indra"],[3,36,"Trishtup","Vishwamitra Gathina","Indra"],[3,37,"Gayatri","Vishwamitra Gathina","Indra"],[3,38,"Trishtup","Vishwamitra Gathina","Indra"],[3,39,"Trishtup","Vishwamitra Gathina","Indra"],[3,40,"Trishtup","Vishwamitra Gathina","Indra"],
 [3,41,"Trishtup","Vishwamitra Gathina","Indra"],[3,42,"Gayatri","Vishwamitra Gathina","Indra"],[3,43,"Gayatri","Vishwamitra Gathina","Indra"],[3,44,"Gayatri","Vishwamitra Gathina","Indra"],[3,45,"Gayatri","Vishwamitra Gathina","Indra"],[3,46,"Trishtup","Vishwamitra Gathina","Indra"],[3,47,"Trishtup","Vishwamitra Gathina","Indra"],[3,48,"Trishtup","Vishwamitra Gathina","Indra"],[3,49,"Trishtup","Vishwamitra Gathina","Indra"],[3,50,"Trishtup","Vishwamitra Gathina","Indra"],
 [3,51,"Trishtup","Vishwamitra Gathina","Indra"],[3,52,"Gayatri","Vishwamitra Gathina","Indra"],[3,53,"various","Vishwamitra Gathina","Indra, Vishvedevas"],[3,54,"Jagati","Vishwamitra Gathina","Vishvedevas"],[3,55,"Trishtup","Vishwamitra Gathina","Vishvedevas"],[3,56,"Trishtup","Vishwamitra Gathina","Vishvedevas"],[3,57,"Gayatri","Vishwamitra Gathina","Vishvedevas"],[3,58,"Trishtup","Vishwamitra Gathina","Ashvins"],[3,59,"Trishtup","Vishwamitra Gathina","Mitra"],[3,60,"Gayatri","Vishwamitra Gathina","Ribhus"],
-[3,61,"Trishtup","Vishwamitra Gathina","Ushas"],[3,62,"Gayatri, Trishtup","Vishwamitra Gathina","Mitra-Varuna, Savitri, Ashvins"],[
-4,1,"Trishtup","Vamadeva Gautama","Agni"],[4,2,"Trishtup","Vamadeva Gautama","Agni"],[4,3,"Trishtup","Vamadeva Gautama","Agni"],[4,4,"Trishtup","Vamadeva Gautama","Agni"],[4,5,"Trishtup","Vamadeva Gautama","Agni"],[4,6,"Trishtup","Vamadeva Gautama","Agni"],[4,7,"Trishtup","Vamadeva Gautama","Agni"],[4,8,"Gayatri","Vamadeva Gautama","Agni"],[4,9,"Gayatri","Vamadeva Gautama","Agni"],[4,10,"Gayatri","Vamadeva Gautama","Agni"],
+[3,61,"Trishtup","Vishwamitra Gathina","Ushas"],[3,62,"Gayatri, Trishtup","Vishwamitra Gathina","Mitra-Varuna, Savitri, Ashvins"],
+[4,1,"Trishtup","Vamadeva Gautama","Agni"],[4,2,"Trishtup","Vamadeva Gautama","Agni"],[4,3,"Trishtup","Vamadeva Gautama","Agni"],[4,4,"Trishtup","Vamadeva Gautama","Agni"],[4,5,"Trishtup","Vamadeva Gautama","Agni"],[4,6,"Trishtup","Vamadeva Gautama","Agni"],[4,7,"Trishtup","Vamadeva Gautama","Agni"],[4,8,"Gayatri","Vamadeva Gautama","Agni"],[4,9,"Gayatri","Vamadeva Gautama","Agni"],[4,10,"Gayatri","Vamadeva Gautama","Agni"],
 [4,11,"Gayatri","Vamadeva Gautama","Agni"],[4,12,"Gayatri","Vamadeva Gautama","Agni"],[4,13,"Trishtup","Vamadeva Gautama","Surya, Mitra-Varuna"],[4,14,"Trishtup","Vamadeva Gautama","Ushas"],[4,15,"Trishtup","Vamadeva Gautama","Agni"],[4,16,"Trishtup","Vamadeva Gautama","Indra"],[4,17,"Trishtup","Vamadeva Gautama","Indra"],[4,18,"Trishtup","Vamadeva Gautama","Indra"],[4,19,"Trishtup","Vamadeva Gautama","Indra"],[4,20,"Trishtup","Vamadeva Gautama","Indra"],
 [4,21,"Trishtup","Vamadeva Gautama","Indra"],[4,22,"Trishtup","Vamadeva Gautama","Indra"],[4,23,"Trishtup","Vamadeva Gautama","Indra"],[4,24,"Trishtup","Vamadeva Gautama","Indra"],[4,25,"Trishtup","Vamadeva Gautama","Indra, Soma"],[4,26,"Trishtup","Vamadeva Gautama","Indra"],[4,27,"Trishtup","Vamadeva Gautama","Indra, Soma"],[4,28,"Trishtup","Vamadeva Gautama","Indra, Soma"],[4,29,"Trishtup","Vamadeva Gautama","Indra"],[4,30,"Trishtup","Vamadeva Gautama","Indra"],
 [4,31,"Trishtup","Vamadeva Gautama","Indra"],[4,32,"Gayatri","Vamadeva Gautama","Indra"],[4,33,"Trishtup","Vamadeva Gautama","Ribhus"],[4,34,"Trishtup","Vamadeva Gautama","Ribhus"],[4,35,"Trishtup","Vamadeva Gautama","Ribhus"],[4,36,"Trishtup","Vamadeva Gautama","Ribhus"],[4,37,"Gayatri","Vamadeva Gautama","Ribhus"],[4,38,"Trishtup","Vamadeva Gautama","Dadhikra"],[4,39,"Gayatri","Vamadeva Gautama","Dadhikra"],[4,40,"Trishtup","Vamadeva Gautama","Dadhikra, Vata"],
 [4,41,"Trishtup","Vamadeva Gautama","Varuna, Mitra, Indra"],[4,42,"Trishtup","Vamadeva Gautama","Varuna, Indra"],[4,43,"Trishtup","Vamadeva Gautama","Ashvins"],[4,44,"Trishtup","Vamadeva Gautama","Ashvins"],[4,45,"Trishtup","Vamadeva Gautama","Ashvins"],[4,46,"Gayatri","Vamadeva Gautama","Vayu, Indra-Vayu"],[4,47,"Gayatri","Vamadeva Gautama","Vayu, Indra-Vayu"],[4,48,"Gayatri","Vamadeva Gautama","Vayu"],[4,49,"Jagati","Vamadeva Gautama","Vishvedevas"],[4,50,"Trishtup","Vamadeva Gautama","Brahmanaspati, Indra"],
 [4,51,"Jagati","Vamadeva Gautama","Ushas"],[4,52,"Trishtup","Vamadeva Gautama","Ushas"],[4,53,"Trishtup","Vamadeva Gautama","Savitri"],[4,54,"Trishtup","Vamadeva Gautama","Savitri"],[4,55,"Trishtup","Vamadeva Gautama","Vishvedevas"],[4,56,"Trishtup","Vamadeva Gautama","Heaven and Earth"],[4,57,"Anushtup","Vamadeva Gautama","Kshetrapati, Vishvedevas"],
-[5,1,"Trishtup","Sutambhara Atreya or Babhru","Agni"],[5,2,"Trishtup","Sutambhara Atreya","Agni"],[5,3,"Trishtup","Vasushruta Atreya","Agni"],[5,4,"Trishtup","Isha Atreya","Agni"],[5,5,"Trishtup","Sumitra Vadhryashva","Agni"],[5,6,"Trishtup","Paura Atreya","Agni"],[5,7,"Gayatri","Dharuna Angirasa","Agni"],[5,8,"Gayatri","Dyumna Vishvacharshani","Agni"],[5,9,"Gayatri","Irimbithi Kanva","Agni"],[5,10,"Gayatri","Havirdhan Angi","Agni"],
+[5,1,"Trishtup","Sutambhara Atreya","Agni"],[5,2,"Trishtup","Sutambhara Atreya","Agni"],[5,3,"Trishtup","Vasushruta Atreya","Agni"],[5,4,"Trishtup","Isha Atreya","Agni"],[5,5,"Trishtup","Sumitra Vadhryashva","Agni"],[5,6,"Trishtup","Paura Atreya","Agni"],[5,7,"Gayatri","Dharuna Angirasa","Agni"],[5,8,"Gayatri","Dyumna Vishvacharshani","Agni"],[5,9,"Gayatri","Irimbithi Kanva","Agni"],[5,10,"Gayatri","Havirdhan Angi","Agni"],
 [5,11,"Gayatri","Shyavashva Atreya","Agni"],[5,12,"Gayatri","Shyavashva Atreya","Agni"],[5,13,"Gayatri","Shyavashva Atreya","Agni"],[5,14,"Gayatri","Shyavashva Atreya","Agni"],[5,15,"Gayatri","Shyavashva Atreya","Agni"],[5,16,"Gayatri","Shyavashva Atreya","Agni"],[5,17,"Gayatri","Shyavashva Atreya","Agni"],[5,18,"various","Dvita Atreya","Agni, Indra, Vishvedevas"],[5,19,"Anushtup","Vikunda Mahamana","Agni"],[5,20,"Gayatri","Gaya Plata","Agni"],
-[5,21,"Gayatri","Shashikarna or Vimada","Agni"],[5,22,"Gayatri","Shashikarna Mahamana","Agni"],[5,23,"Gayatri","Shashikarna Mahamana","Agni"],[5,24,"Gayatri","Babhru Atreya","Agni"],[5,25,"Gayatri","Vasuyur Atreya","Agni"],[5,26,"Gayatri","Gaya Atreya","Agni"],[5,27,"Trishtup","Trita Aptya or Tryaruna Traivrishna","Agni, Vishvedevas"],[5,28,"Trishtup","Vishvavara Atreyi","Agni"],[5,29,"Trishtup","Gaupayanas or Shyavashva Atreya","Indra"],[5,30,"Trishtup","Gaupayanas or Shyavashva Atreya","Indra"],
+[5,21,"Gayatri","Shashikarna Mahamana","Agni"],[5,22,"Gayatri","Shashikarna Mahamana","Agni"],[5,23,"Gayatri","Shashikarna Mahamana","Agni"],[5,24,"Gayatri","Babhru Atreya","Agni"],[5,25,"Gayatri","Vasuyur Atreya","Agni"],[5,26,"Gayatri","Gaya Atreya","Agni"],[5,27,"Trishtup","Trita Aptya","Agni, Vishvedevas"],[5,28,"Trishtup","Vishvavara Atreyi","Agni"],[5,29,"Trishtup","Shyavashva Atreya","Indra"],[5,30,"Trishtup","Shyavashva Atreya","Indra"],
 [5,31,"Trishtup","Shyavashva Atreya","Indra"],[5,32,"Trishtup","Shyavashva Atreya","Indra"],[5,33,"Trishtup","Shyavashva Atreya","Indra"],[5,34,"Trishtup","Shyavashva Atreya","Indra"],[5,35,"Trishtup","Shyavashva Atreya","Indra"],[5,36,"Gayatri","Shyavashva Atreya","Indra"],[5,37,"Gayatri","Shyavashva Atreya","Indra"],[5,38,"Gayatri","Shyavashva Atreya","Indra"],[5,39,"Gayatri","Shyavashva Atreya","Indra"],[5,40,"Trishtup","Atri Bhauma","Indra, Surya, Atri"],
 [5,41,"Jagati","Shyavashva Atreya","Vishvedevas"],[5,42,"Jagati","Shyavashva Atreya","Vishvedevas"],[5,43,"Jagati","Shyavashva Atreya","Vishvedevas"],[5,44,"various","Shyavashva Atreya","Vishvedevas"],[5,45,"Jagati","Shyavashva Atreya","Vishvedevas"],[5,46,"Jagati","Shyavashva Atreya","Vishvedevas"],[5,47,"Trishtup","Shyavashva Atreya","Vishvedevas"],[5,48,"Gayatri","Shyavashva Atreya","Vishvedevas"],[5,49,"Gayatri","Shyavashva Atreya","Vishvedevas"],[5,50,"Anushtup","Shyavashva Atreya","Vishvedevas"],
 [5,51,"Anushtup","Shyavashva Atreya","Vishvedevas"],[5,52,"Trishtup","Shyavashva Atreya","Maruts"],[5,53,"Jagati","Shyavashva Atreya","Maruts"],[5,54,"Trishtup","Shyavashva Atreya","Maruts"],[5,55,"Trishtup","Shyavashva Atreya","Maruts"],[5,56,"Trishtup","Shyavashva Atreya","Maruts"],[5,57,"Trishtup","Shyavashva Atreya","Maruts"],[5,58,"Trishtup","Shyavashva Atreya","Maruts"],[5,59,"Trishtup","Shyavashva Atreya","Maruts"],[5,60,"Trishtup","Shyavashva Atreya","Maruts, Mitra"],
 [5,61,"various","Shyavashva Atreya","Maruts"],[5,62,"Trishtup","Shyavashva Atreya","Mitra-Varuna"],[5,63,"Trishtup","Shyavashva Atreya","Mitra-Varuna"],[5,64,"Trishtup","Shyavashva Atreya","Mitra-Varuna"],[5,65,"Trishtup","Shyavashva Atreya","Mitra-Varuna"],[5,66,"Trishtup","Shyavashva Atreya","Mitra-Varuna"],[5,67,"Trishtup","Shyavashva Atreya","Mitra-Varuna"],[5,68,"Trishtup","Shyavashva Atreya","Mitra-Varuna"],[5,69,"Trishtup","Shyavashva Atreya","Mitra-Varuna"],[5,70,"Gayatri","Shyavashva Atreya","Mitra-Varuna"],
 [5,71,"Gayatri","Shyavashva Atreya","Mitra-Varuna"],[5,72,"Gayatri","Shyavashva Atreya","Mitra-Varuna"],[5,73,"Trishtup","Shyavashva Atreya","Ashvins"],[5,74,"Gayatri","Shyavashva Atreya","Ashvins"],[5,75,"Gayatri","Shyavashva Atreya","Ashvins"],[5,76,"Trishtup","Shyavashva Atreya","Ashvins"],[5,77,"Trishtup","Shyavashva Atreya","Ashvins"],[5,78,"various","Shyavashva Atreya","Ashvins"],[5,79,"Gayatri","Shyavashva Atreya","Ushas"],[5,80,"Gayatri","Shyavashva Atreya","Ushas"],
-[5,81,"Trishtup","Shyavashva Atreya","Savitri"],[5,82,"Trishtup","Shyavashva Atreya","Savitri"],[5,83,"Trishtup","Atri Bhauma","Parjanya"],[5,84,"Trishtup","Atri Bhauma","Prithivi"],[5,85,"Trishtup","Atri Bhauma","Varuna"],[5,86,"Gayatri","Atri Bhauma","Agni, Soma"],[5,87,"Jagati","Atri Bhauma","Maruts"],[
-6,1,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,2,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,3,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,4,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,5,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,6,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,7,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,8,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,9,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,10,"Trishtup","Bharadvaja Barhaspatya","Agni"],
+[5,81,"Trishtup","Shyavashva Atreya","Savitri"],[5,82,"Trishtup","Shyavashva Atreya","Savitri"],[5,83,"Trishtup","Atri Bhauma","Parjanya"],[5,84,"Trishtup","Atri Bhauma","Prithivi"],[5,85,"Trishtup","Atri Bhauma","Varuna"],[5,86,"Gayatri","Atri Bhauma","Agni, Soma"],[5,87,"Jagati","Atri Bhauma","Maruts"],
+[6,1,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,2,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,3,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,4,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,5,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,6,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,7,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,8,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,9,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,10,"Trishtup","Bharadvaja Barhaspatya","Agni"],
 [6,11,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,12,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,13,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,14,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,15,"Trishtup","Bharadvaja Barhaspatya","Agni"],[6,16,"Gayatri, Trishtup","Bharadvaja Barhaspatya","Agni"],[6,17,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,18,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,19,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,20,"Trishtup","Bharadvaja Barhaspatya","Indra"],
 [6,21,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,22,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,23,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,24,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,25,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,26,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,27,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,28,"Trishtup","Bharadvaja Barhaspatya","Cows"],[6,29,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,30,"Trishtup","Bharadvaja Barhaspatya","Indra"],
 [6,31,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,32,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,33,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,34,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,35,"Gayatri","Bharadvaja Barhaspatya","Indra"],[6,36,"Gayatri","Bharadvaja Barhaspatya","Indra"],[6,37,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,38,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,39,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,40,"Trishtup","Bharadvaja Barhaspatya","Indra"],
 [6,41,"Gayatri","Bharadvaja Barhaspatya","Indra"],[6,42,"Gayatri","Bharadvaja Barhaspatya","Indra"],[6,43,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,44,"various","Bharadvaja Barhaspatya","Indra"],[6,45,"various","Bharadvaja Barhaspatya","Indra"],[6,46,"Trishtup","Bharadvaja Barhaspatya","Indra"],[6,47,"various","Bharadvaja Barhaspatya","Indra"],[6,48,"various","Bharadvaja Barhaspatya","Agni, Indra, Vishvedevas, Ashvins, Pushan"],[6,49,"Trishtup","Bharadvaja Barhaspatya","Vishvedevas"],[6,50,"Trishtup","Bharadvaja Barhaspatya","Vishvedevas"],
 [6,51,"Trishtup","Bharadvaja Barhaspatya","Vishvedevas"],[6,52,"Gayatri","Bharadvaja Barhaspatya","Vishvedevas"],[6,53,"Gayatri","Bharadvaja Barhaspatya","Pushan"],[6,54,"Gayatri","Bharadvaja Barhaspatya","Pushan"],[6,55,"Gayatri","Bharadvaja Barhaspatya","Pushan"],[6,56,"Gayatri","Bharadvaja Barhaspatya","Pushan"],[6,57,"Trishtup","Bharadvaja Barhaspatya","Indra, Pushan"],[6,58,"Trishtup","Bharadvaja Barhaspatya","Pushan"],[6,59,"Gayatri","Bharadvaja Barhaspatya","Indra, Agni"],[6,60,"Trishtup","Bharadvaja Barhaspatya","Indra, Agni"],
 [6,61,"Trishtup","Bharadvaja Barhaspatya","Sarasvati"],[6,62,"Trishtup","Bharadvaja Barhaspatya","Ashvins"],[6,63,"Trishtup","Bharadvaja Barhaspatya","Ashvins"],[6,64,"Trishtup","Bharadvaja Barhaspatya","Ushas"],[6,65,"Trishtup","Bharadvaja Barhaspatya","Ushas"],[6,66,"Trishtup","Bharadvaja Barhaspatya","Maruts"],[6,67,"Trishtup","Bharadvaja Barhaspatya","Mitra-Varuna"],[6,68,"Trishtup","Bharadvaja Barhaspatya","Mitra-Varuna"],[6,69,"Trishtup","Bharadvaja Barhaspatya","Indra-Vishnu"],[6,70,"Trishtup","Bharadvaja Barhaspatya","Dyava-Prithivi"],
-[6,71,"Trishtup","Bharadvaja Barhaspatya","Savitri"],[6,72,"Trishtup","Bharadvaja Barhaspatya","Indra, Soma"],[6,73,"Trishtup","Bharadvaja Barhaspatya","Brahmanaspati"],[6,74,"Trishtup","Bharadvaja Barhaspatya","Soma-Rudra"],[6,75,"Trishtup, Anushtup","Bharadvaja Barhaspatya","Weapons"],[
-7,1,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,2,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,3,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,4,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,5,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,6,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,7,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,8,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,9,"Gayatri","Vasishtha Maitravaruni","Agni"],[7,10,"Gayatri","Vasishtha Maitravaruni","Agni"],
+[6,71,"Trishtup","Bharadvaja Barhaspatya","Savitri"],[6,72,"Trishtup","Bharadvaja Barhaspatya","Indra, Soma"],[6,73,"Trishtup","Bharadvaja Barhaspatya","Brahmanaspati"],[6,74,"Trishtup","Bharadvaja Barhaspatya","Soma-Rudra"],[6,75,"Trishtup, Anushtup","Bharadvaja Barhaspatya","Weapons"],
+[7,1,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,2,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,3,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,4,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,5,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,6,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,7,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,8,"Trishtup","Vasishtha Maitravaruni","Agni"],[7,9,"Gayatri","Vasishtha Maitravaruni","Agni"],[7,10,"Gayatri","Vasishtha Maitravaruni","Agni"],
 [7,11,"Gayatri","Vasishtha Maitravaruni","Agni"],[7,12,"Gayatri","Vasishtha Maitravaruni","Agni"],[7,13,"Gayatri","Vasishtha Maitravaruni","Agni"],[7,14,"Gayatri","Vasishtha Maitravaruni","Agni"],[7,15,"Gayatri","Vasishtha Maitravaruni","Agni"],[7,16,"Gayatri","Vasishtha Maitravaruni","Agni"],[7,17,"Gayatri","Vasishtha Maitravaruni","Agni"],[7,18,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,19,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,20,"Trishtup","Vasishtha Maitravaruni","Indra"],
 [7,21,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,22,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,23,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,24,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,25,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,26,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,27,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,28,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,29,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,30,"Trishtup","Vasishtha Maitravaruni","Indra"],
 [7,31,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,32,"Trishtup","Vasishtha Maitravaruni","Indra"],[7,33,"Trishtup","Vasishtha Maitravaruni","Indra, Vishvedevas"],[7,34,"Trishtup","Vasishtha Maitravaruni","Vishvedevas"],[7,35,"Trishtup","Vasishtha Maitravaruni","Vishvedevas"],[7,36,"Trishtup","Vasishtha Maitravaruni","Vishvedevas"],[7,37,"Gayatri","Vasishtha Maitravaruni","Vishvedevas"],[7,38,"Trishtup","Vasishtha Maitravaruni","Savitri"],[7,39,"Trishtup","Vasishtha Maitravaruni","Vishvedevas"],[7,40,"Trishtup","Vasishtha Maitravaruni","Vishvedevas"],
@@ -139,9 +136,9 @@ const RV = [
 [8,51,"Trishtup","Kakshivat Dairghatamas","Indra"],[8,52,"Trishtup","Kakshivat Dairghatamas","Indra"],[8,53,"Trishtup","Kakshivat Dairghatamas","Indra"],[8,54,"Gayatri","Kakshivat Dairghatamas","Indra"],[8,55,"Anushtup","Kakshivat Dairghatamas","Indra"],[8,56,"Trishtup","Kakshivat Dairghatamas","Indra"],[8,57,"Gayatri","Kakshivat Dairghatamas","Indra"],[8,58,"Trishtup","Kakshivat Dairghatamas","Vishvedevas"],[8,59,"Trishtup","Kakshivat Dairghatamas","Vishvedevas"],[8,60,"Gayatri","Kakshivat Dairghatamas","Agni"],
 [8,61,"Gayatri","Kakshivat Dairghatamas","Indra"],[8,62,"Gayatri","Kakshivat Dairghatamas","Indra, Agni"],[8,63,"Gayatri","Kakshivat Dairghatamas","Brahmanaspati, Indra"],[8,64,"Gayatri","Kakshivat Dairghatamas","Indra"],[8,65,"Trishtup, Gayatri","Kakshivat Dairghatamas","Indra, Soma"],[8,66,"Trishtup","Kakshivat Dairghatamas","Indra"],[8,67,"Trishtup","Kakshivat Dairghatamas","Adityas"],[8,68,"Trishtup","Kakshivat Dairghatamas","Indra"],[8,69,"Trishtup","Kakshivat Dairghatamas","Indra"],[8,70,"Trishtup","Kakshivat Dairghatamas","Indra"],
 [8,71,"Trishtup","Kakshivat Dairghatamas","Indra"],[8,72,"Trishtup","Kakshivat Dairghatamas","Apah"],[8,73,"Anushtup","Shunahshepa Ajigarti","Vishvedevas"],[8,74,"Gayatri","Shunahshepa Ajigarti","Indra, Agni, Soma"],[8,75,"Trishtup","various rishis","Weapons"],[8,76,"Gayatri","Vatsa Kanva","Indra"],[8,77,"Trishtup","Vatsa Kanva","Indra"],[8,78,"Gayatri","Vatsa Kanva","Indra"],[8,79,"Gayatri","Vatsa Kanva","Soma"],[8,80,"Gayatri","Vatsa Kanva","Indra"],
-[8,81,"Gayatri","Vatsa Kanva","Indra"],[8,82,"Gayatri","Vatsa Kanva","Indra"],[8,83,"Anushtup","Vatsa Kanva","Vishvedevas"],[8,84,"Gayatri","Vatsa Kanva","Agni"],[8,85,"Anushtup","Surya, Soma","Surya, Soma"],[8,86,"Gayatri","Visvaka Nabhanedhishtha","Indra"],[8,87,"Gayatri","Visvaka Nabhanedhishtha","Indra"],[8,88,"Trishtup","Visvaka Nabhanedhishtha","Indra, Soma"],[8,89,"Trishtup","Visvaka Nabhanedhishtha","Indra"],[8,90,"Trishtup","Visvaka Nabhanedhishtha","Indra"],
-[8,91,"Anushtup","Apala Atreyi","Soma, Indra"],[8,92,"various","Bodha Atreya","Indra"],[8,93,"various","Rishyashringa","Indra"],[8,94,"Gayatri","Archanana Dvaitavana","Indra"],[8,95,"Gayatri","Archanana Dvaitavana","Indra"],[8,96,"Trishtup","Archanana Dvaitavana","Indra"],[8,97,"Gayatri","Archanana Dvaitavana","Indra"],[8,98,"Gayatri","Archanana Dvaitavana","Indra"],[8,99,"Gayatri","Archanana Dvaitavana","Indra"],[8,100,"Trishtup","Indra, Musala","Indra"],
-[8,101,"Trishtup","Shunahshepa or Vimada","Vishvedevas, Indra"],[8,102,"various","various","Vishvedevas, Indra, Adityas, Sarasvati"],[8,103,"Gayatri","Kakshivat Dairghatamas","Indra"],
+[8,81,"Gayatri","Vatsa Kanva","Indra"],[8,82,"Gayatri","Vatsa Kanva","Indra"],[8,83,"Anushtup","Vatsa Kanva","Vishvedevas"],[8,84,"Gayatri","Vatsa Kanva","Agni"],[8,85,"Anushtup","Surya Savitri","Surya, Soma"],[8,86,"Gayatri","Visvaka Nabhanedhishtha","Indra"],[8,87,"Gayatri","Visvaka Nabhanedhishtha","Indra"],[8,88,"Trishtup","Visvaka Nabhanedhishtha","Indra, Soma"],[8,89,"Trishtup","Visvaka Nabhanedhishtha","Indra"],[8,90,"Trishtup","Visvaka Nabhanedhishtha","Indra"],
+[8,91,"Anushtup","Apala Atreyi","Soma, Indra"],[8,92,"various","Bodha Atreya","Indra"],[8,93,"various","Rishyashringa","Indra"],[8,94,"Gayatri","Archanana Dvaitavana","Indra"],[8,95,"Gayatri","Archanana Dvaitavana","Indra"],[8,96,"Trishtup","Archanana Dvaitavana","Indra"],[8,97,"Gayatri","Archanana Dvaitavana","Indra"],[8,98,"Gayatri","Archanana Dvaitavana","Indra"],[8,99,"Gayatri","Archanana Dvaitavana","Indra"],[8,100,"Trishtup","Indra Mushkavant","Indra"],
+[8,101,"Trishtup","Shunahshepa Ajigarti","Vishvedevas, Indra"],[8,102,"various","various","Vishvedevas, Indra, Adityas, Sarasvati"],[8,103,"Gayatri","Kakshivat Dairghatamas","Indra"],
 [9,1,"Gayatri","Madhucchandas Vaishwamitra","Soma"],[9,2,"Gayatri","Madhucchandas Vaishwamitra","Soma"],[9,3,"Gayatri","Madhucchandas Vaishwamitra","Soma"],[9,4,"Gayatri","Madhucchandas Vaishwamitra","Soma"],[9,5,"Gayatri","Madhucchandas Vaishwamitra","Soma"],[9,6,"Gayatri","Asita Kashyapa","Soma"],[9,7,"Gayatri","Asita Kashyapa","Soma"],[9,8,"Gayatri","Asita Kashyapa","Soma"],[9,9,"Gayatri","Asita Kashyapa","Soma"],[9,10,"Gayatri","Asita Kashyapa","Soma"],
 [9,11,"Gayatri","Asita Kashyapa","Soma"],[9,12,"Gayatri","Asita Kashyapa","Soma"],[9,13,"Gayatri","Asita Kashyapa","Soma"],[9,14,"Gayatri","Devapi Arshtishena","Soma"],[9,15,"Gayatri","Devapi Arshtishena","Soma"],[9,16,"Gayatri","Devapi Arshtishena","Soma"],[9,17,"Gayatri","Devapi Arshtishena","Soma"],[9,18,"Gayatri","Devapi Arshtishena","Soma"],[9,19,"Gayatri","Devapi Arshtishena","Soma"],[9,20,"Gayatri","Devapi Arshtishena","Soma"],
 [9,21,"Gayatri","Devapi Arshtishena","Soma"],[9,22,"Gayatri","Devapi Arshtishena","Soma"],[9,23,"Gayatri","Devapi Arshtishena","Soma"],[9,24,"Gayatri","Devapi Arshtishena","Soma"],[9,25,"Gayatri","Devapi Arshtishena","Soma"],[9,26,"Gayatri","Devapi Arshtishena","Soma"],[9,27,"Gayatri","Devapi Arshtishena","Soma"],[9,28,"Gayatri","Vasishtha Maitravaruni","Soma"],[9,29,"Gayatri","Vasishtha Maitravaruni","Soma"],[9,30,"Gayatri","Vasishtha Maitravaruni","Soma"],
@@ -175,16 +172,18 @@ const RV = [
 [10,191,"Gayatri","various","Agni, Vishvedevas"]
 ];
 
-// ── Build lookup maps ─────────────────────────────────────────
+// ── Lookup functions ──────────────────────────────────────────
 function findMeta(mandala, sukta) {
     return RV.find(r => r[0] === mandala && r[1] === sukta) || null;
 }
 
+// ✅ Fixed: supports mandala='all' for cross-mandala search
 function filterMeta(mandala, field, value) {
-    const idx = { rishi: 3, devata: 4, metre: 2 }[field];
+    const idx = { rishi:3, devata:4, metre:2 }[field];
+    const v = value.toLowerCase();
     return RV.filter(r =>
-        r[0] === mandala &&
-        r[idx] && r[idx].toLowerCase().includes(value.toLowerCase())
+        (mandala === 'all' || r[0] === mandala) &&
+        r[idx] && r[idx].toLowerCase().includes(v)
     );
 }
 
@@ -192,10 +191,11 @@ function filterMeta(mandala, field, value) {
 const chatHistory = [];
 
 // ── Parse intent ──────────────────────────────────────────────
+// ✅ Fixed: now supports "across all mandalas", "entire rigveda", no mandala specified
 function parseIntent(text) {
     const t = text.toLowerCase();
 
-    // Sukta request
+    // Sukta request: "sukta 15 of mandala 1" / "mandala 1 sukta 15" / "1.15"
     let m, s;
     const p1 = t.match(/sukta[m]?\s+(\d+)\s+(?:of\s+)?mandala\s+(\d+)/);
     const p2 = t.match(/mandala\s+(\d+)[,\s]+sukta[m]?\s+(\d+)/);
@@ -205,37 +205,34 @@ function parseIntent(text) {
     else if (p3) { m = +p3[1]; s = +p3[2]; }
     if (m && s) return { type:'sukta', mandala:m, sukta:s };
 
+    // Detect "all mandalas" or specific mandala
+    const allMandalas = /all\s+mandala|across\s+all|every\s+mandala|entire\s+rigveda|all\s+\d+\s+mandala|all\s+mandalas/.test(t);
+    const mandalaMatch = t.match(/mandala\s+(\d+)/);
+    const mandala = mandalaMatch ? +mandalaMatch[1] : (allMandalas ? 'all' : null);
+
     // Filter by rishi
-    const pr = t.match(/(?:by|rishi|sage)\s+([\w\s]+?)\s+(?:in\s+)?mandala\s+(\d+)/)
-            || t.match(/mandala\s+(\d+).*(?:by|rishi|sage)\s+([\w]+)/);
-    if (pr) {
-        const mandala = +(pr[2]||pr[1]);
-        const rishi = isNaN(+pr[1]) ? pr[1].trim() : pr[2].trim();
-        return { type:'filter', filter:'rishi', value:rishi, mandala };
+    const pr = t.match(/(?:by|rishi|sage)\s+([\w]+)/);
+    if (pr && mandala !== null) {
+        return { type:'filter', filter:'rishi', value:pr[1].trim(), mandala };
     }
 
     // Filter by metre
-    const pm = t.match(/([\w]+)\s+(?:metre|meter|chandas).*mandala\s+(\d+)/)
-            || t.match(/mandala\s+(\d+).*(?:metre|meter|chandas)\s+([\w]+)/);
-    if (pm) {
-        const mandala = +(pm[2]||pm[1]);
-        const metre = isNaN(+pm[1]) ? pm[1] : pm[2];
+    const pm = t.match(/([\w]+)\s+(?:metre|meter|chandas)/) || t.match(/(?:metre|meter|chandas)\s+([\w]+)/);
+    if (pm && mandala !== null) {
+        const metre = ['metre','meter','chandas'].includes(pm[1]) ? pm[2] : pm[1];
         return { type:'filter', filter:'metre', value:metre, mandala };
     }
 
-    // Filter by devata/god
-    const pd = t.match(/(?:suktas?\s+)?(?:to|for|devata|god|deity)\s+([\w]+).*mandala\s+(\d+)/)
-            || t.match(/mandala\s+(\d+).*(?:to|for|devata|god|deity)\s+([\w]+)/);
-    if (pd) {
-        const mandala = +(pd[2]||pd[1]);
-        const devata = isNaN(+pd[1]) ? pd[1] : pd[2];
-        return { type:'filter', filter:'devata', value:devata, mandala };
+    // Filter by devata
+    const pd = t.match(/(?:to|for|devata|god|deity)\s+([\w]+)/);
+    if (pd && mandala !== null) {
+        return { type:'filter', filter:'devata', value:pd[1].trim(), mandala };
     }
 
     return { type:'chat' };
 }
 
-// ── Claude API call ───────────────────────────────────────────
+// ── Claude API ────────────────────────────────────────────────
 async function callClaude(key, userMsg, system, maxTokens=1500) {
     chatHistory.push({ role:'user', content:userMsg });
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -259,82 +256,59 @@ async function callClaude(key, userMsg, system, maxTokens=1500) {
 function renderCard(mandala, sukta, meta, aiText, chat) {
     const card = document.createElement('div');
     card.className = 'vcard';
-
     const vm = document.createElement('div');
     vm.className = 'vmeta';
     vm.textContent = `Ṛgveda · Maṇḍala ${mandala} · Sūkta ${sukta}\nṚṣi: ${meta[3]}  ·  Devatā: ${meta[4]}  ·  Chandas: ${meta[2]}`;
     card.appendChild(vm);
-
-    // Parse verses from AI response
     const blocks = aiText.split(/---VERSE\s+\d+---/).slice(1);
     blocks.forEach((block, i) => {
         const vb = document.createElement('div');
         vb.className = 'vblock';
-
         const vn = document.createElement('div');
         vn.className = 'vnum';
         vn.textContent = `Verse ${i+1}`;
         vb.appendChild(vn);
-
         const trn = block.match(/TRANSLITERATION:\s*([\s\S]*?)(?=TRANSLATION:|---END---|$)/)?.[1]?.trim();
         const trl = block.match(/TRANSLATION:\s*([\s\S]*?)(?=---END---|EXPLANATION:|$)/)?.[1]?.trim();
-
-        if (trn) {
-            const d = document.createElement('div');
-            d.className = 'vtrn'; d.textContent = trn; vb.appendChild(d);
-        }
-        if (trl) {
-            const d = document.createElement('div');
-            d.className = 'vtrl'; d.textContent = trl; vb.appendChild(d);
-        }
+        if (trn) { const d=document.createElement('div'); d.className='vtrn'; d.textContent=trn; vb.appendChild(d); }
+        if (trl) { const d=document.createElement('div'); d.className='vtrl'; d.textContent=trl; vb.appendChild(d); }
         card.appendChild(vb);
     });
-
     const exp = aiText.match(/EXPLANATION:\s*([\s\S]*)/)?.[1]?.trim();
-    if (exp) {
-        const d = document.createElement('div');
-        d.className = 'vexp'; d.textContent = exp; card.appendChild(d);
-    }
+    if (exp) { const d=document.createElement('div'); d.className='vexp'; d.textContent=exp; card.appendChild(d); }
     chat.appendChild(card);
 }
 
 // ── Render filter results ─────────────────────────────────────
-function renderFilter(results, field, value, mandala, chat) {
+function renderFilter(results, field, value, label, chat) {
     const h = document.createElement('div');
     h.className = 'msg ai';
-    h.textContent = `Found ${results.length} sūkta(s) where ${field} contains "${value}" in Maṇḍala ${mandala}:`;
+    h.textContent = `Found ${results.length} sūkta(s) where ${field} contains "${value}" in ${label}:`;
     chat.appendChild(h);
-
-    results.slice(0, 30).forEach(r => {
-        const c = document.createElement('div');
-        c.className = 'fcard';
-        const t = document.createElement('div');
-        t.className = 'ftitle';
-        t.textContent = `Maṇḍala ${r[0]} · Sūkta ${r[1]}`;
-        const m = document.createElement('div');
-        m.className = 'fmeta';
-        m.textContent = `Ṛṣi: ${r[3]}  ·  Devatā: ${r[4]}  ·  Chandas: ${r[2]}`;
+    results.slice(0,40).forEach(r => {
+        const c=document.createElement('div'); c.className='fcard';
+        const t=document.createElement('div'); t.className='ftitle';
+        t.textContent=`Maṇḍala ${r[0]} · Sūkta ${r[1]}`;
+        const m=document.createElement('div'); m.className='fmeta';
+        m.textContent=`Ṛṣi: ${r[3]}  ·  Devatā: ${r[4]}  ·  Chandas: ${r[2]}`;
         c.appendChild(t); c.appendChild(m); chat.appendChild(c);
     });
-    if (results.length > 30) {
-        const more = document.createElement('div');
-        more.className = 'msg ai';
-        more.textContent = `…and ${results.length - 30} more. Try a more specific filter.`;
+    if (results.length > 40) {
+        const more=document.createElement('div'); more.className='msg ai';
+        more.textContent=`…and ${results.length-40} more. Try a more specific filter.`;
         chat.appendChild(more);
     }
 }
 
-// ── Main ──────────────────────────────────────────────────────
+// ── Main send ─────────────────────────────────────────────────
 async function send() {
     const input = document.getElementById('userInput');
     const keyEl = document.getElementById('key');
     const btn   = document.getElementById('sendBtn');
     const chat  = document.getElementById('chat');
-
-    const key  = keyEl.value.trim();
-    const text = input.value.trim();
+    const key   = keyEl.value.trim();
+    const text  = input.value.trim();
     if (!text || !key) return;
-
     sessionStorage.setItem('v_key', key);
 
     const uMsg = document.createElement('div');
@@ -347,7 +321,6 @@ async function send() {
     loading.textContent = '…';
     chat.appendChild(loading);
     chat.scrollTop = chat.scrollHeight;
-
     input.value = '';
     btn.disabled = true;
 
@@ -357,8 +330,8 @@ async function send() {
         if (intent.type === 'sukta') {
             const meta = findMeta(intent.mandala, intent.sukta);
             if (!meta) {
-                loading.className = 'msg ai error';
-                loading.textContent = `Sūkta ${intent.sukta} not found in Maṇḍala ${intent.mandala}.`;
+                loading.className='msg ai error';
+                loading.textContent=`Sūkta ${intent.sukta} not found in Maṇḍala ${intent.mandala}.`;
             } else {
                 loading.textContent = 'Retrieving and translating verses…';
                 const prompt =
@@ -378,14 +351,11 @@ TRANSLATION: [English translation]
 After all verses add:
 EXPLANATION: [2-3 sentence spiritual significance of this sūkta]
 
-If you are not confident about any verse's wording, note it with [uncertain]. Never fabricate verses.`;
-
-                const system =
-`You are a Vedic scholar with deep knowledge of the Rigveda. 
+If you are not confident about any verse, mark it [uncertain]. Never fabricate.`;
+                const system = `You are a Vedic scholar with deep knowledge of the Rigveda.
 Provide accurate IAST transliterations and faithful English translations.
-If uncertain about exact wording of a verse, clearly mark it [uncertain] rather than guessing.
+If uncertain about exact wording, mark it [uncertain] rather than guessing.
 Never invent or fabricate Sanskrit text.`;
-
                 const reply = await callClaude(key, prompt, system, 3000);
                 loading.remove();
                 renderCard(intent.mandala, intent.sukta, meta, reply, chat);
@@ -394,7 +364,8 @@ Never invent or fabricate Sanskrit text.`;
         } else if (intent.type === 'filter') {
             const results = filterMeta(intent.mandala, intent.filter, intent.value);
             loading.remove();
-            renderFilter(results, intent.filter, intent.value, intent.mandala, chat);
+            const label = intent.mandala === 'all' ? 'all Maṇḍalas' : `Maṇḍala ${intent.mandala}`;
+            renderFilter(results, intent.filter, intent.value, label, chat);
 
         } else {
             const reply = await callClaude(key, text,
@@ -405,12 +376,10 @@ Keep responses warm, thoughtful, and concise.`, 1024);
             loading.className = 'msg ai';
             loading.textContent = reply;
         }
-
     } catch(err) {
-        loading.className = 'msg ai error';
-        loading.textContent = 'Error: ' + err.message;
+        loading.className='msg ai error';
+        loading.textContent='Error: ' + err.message;
     }
-
     btn.disabled = false;
     chat.scrollTop = chat.scrollHeight;
 }
